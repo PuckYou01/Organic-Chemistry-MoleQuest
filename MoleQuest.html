@@ -1,0 +1,2423 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="เกมต่อโครงสร้างสารประกอบอินทรีย์ สำหรับเคมี ม.6 — 5 บทเรียน 48 ด่าน พร้อมแบบทดสอบย่อยและสอบใหญ่ HOTs">
+<meta name="theme-color" content="#0d1117">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MoleQuest">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" rx="16" fill="%230d1117"/><g stroke="%2338bdf8" stroke-width="5"><path d="M40 24 22 46M40 24 58 46M26 52h28"/></g><circle cx="40" cy="20" r="9" fill="%23808080"/><circle cx="18" cy="52" r="9" fill="%23ef4444"/><circle cx="62" cy="52" r="9" fill="%233b82f6"/></svg>'>
+<link rel="apple-touch-icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" rx="16" fill="%230d1117"/><g stroke="%2338bdf8" stroke-width="5"><path d="M40 24 22 46M40 24 58 46M26 52h28"/></g><circle cx="40" cy="20" r="9" fill="%23808080"/><circle cx="18" cy="52" r="9" fill="%23ef4444"/><circle cx="62" cy="52" r="9" fill="%233b82f6"/></svg>'>
+<title>MoleQuest</title>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:oklch(0.16 0.03 260);
+  --surface:oklch(0.235 0.03 258);
+  --surface2:oklch(0.285 0.03 258);
+  --border:oklch(0.34 0.03 258);
+  --text:oklch(0.96 0.01 260);
+  --dim:oklch(0.74 0.02 260);
+  --cyan:oklch(0.75 0.14 200);
+  --amber:oklch(0.82 0.15 85);
+  --violet:oklch(0.70 0.17 300);
+  --green:oklch(0.75 0.15 145);
+  --red:oklch(0.66 0.19 25);
+  --atomC:oklch(0.55 0.01 260);
+  --atomO:oklch(0.66 0.19 25);
+  --atomN:oklch(0.62 0.16 260);
+  --fd:'Kanit','Segoe UI',Tahoma,sans-serif;
+  --fb:'Sarabun','Segoe UI',Tahoma,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+[hidden]{display:none!important;}
+body{margin:0;background:oklch(0.11 0.02 260);color:var(--text);font-family:var(--fb);}
+button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer;}
+h1,h2,h3,h4{font-family:var(--fd);margin:0;}
+
+#app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.screen{flex:1;display:flex;flex-direction:column;min-height:0;}
+.safetop{height:env(safe-area-inset-top,0px);flex:none;}
+.safebot{height:env(safe-area-inset-bottom,0px);flex:none;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+/* ---------- shared ---------- */
+.top{flex:none;display:flex;align-items:center;gap:10px;padding:12px 14px;}
+.ico{width:44px;height:44px;flex:none;border-radius:12px;background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.ttl{flex:1;min-width:0;}
+.ttl .k{font-size:10.5px;color:var(--dim);font-weight:600;}
+.ttl h3{font-size:15px;margin:1px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);
+  border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;color:var(--amber);flex:none;}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  font-family:var(--fd);font-weight:600;font-size:15.5px;padding:15px;border-radius:14px;min-height:52px;}
+.btn-p{background:var(--cyan);color:oklch(0.16 0.03 260);}
+.btn-v{background:var(--violet);color:oklch(0.16 0.03 260);}
+.btn-g{background:var(--green);color:oklch(0.16 0.03 260);}
+.btn-o{border:1px solid var(--border);color:var(--text);background:var(--surface);}
+.btn:disabled{opacity:.45;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;}
+.sech{font-size:12.5px;font-weight:600;color:var(--dim);margin:0 0 9px;}
+/* 16px minimum — iOS Safari auto-zooms the page on focus for anything smaller */
+input{width:100%;background:oklch(0.19 0.03 258);border:1px solid var(--border);border-radius:12px;
+  padding:13px 14px;font-size:16px;color:var(--text);font-family:var(--fb);margin-bottom:14px;outline:none;}
+input:focus{border-color:var(--cyan);}
+.flabel{font-size:11.5px;color:var(--dim);font-weight:600;margin:0 0 6px;}
+textarea{width:100%;background:oklch(0.19 0.03 258);border:1px solid var(--border);border-radius:12px;
+  padding:12px;font-size:13px;color:var(--text);font-family:var(--fb);min-height:88px;line-height:1.6;outline:none;}
+
+/* ---------- landing ---------- */
+#s-home{padding:0;background:radial-gradient(circle at 50% 16%,oklch(0.30 0.08 250/.5),transparent 62%),var(--bg);}
+#s-home .inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;text-align:center;}
+.brand{font-family:var(--fd);font-size:34px;font-weight:700;margin:14px 0 4px;}
+.brand span{color:var(--cyan);}
+.tag{font-size:13.5px;color:var(--dim);margin:0 0 24px;line-height:1.6;}
+.hello{font-family:var(--fd);font-size:17px;margin-bottom:6px;}
+.prog-wrap{width:100%;margin-bottom:22px;}
+.prog-bar{height:8px;border-radius:999px;background:var(--surface2);overflow:hidden;}
+.prog-fill{height:100%;background:var(--cyan);border-radius:999px;transition:width .4s;}
+.prog-txt{font-size:11.5px;color:var(--dim);margin-top:7px;}
+.homelinks{display:flex;gap:8px;width:100%;margin-top:10px;}
+.hlink{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;color:var(--dim);min-height:64px;justify-content:center;}
+.hlink .i{font-size:19px;}
+.avrow{display:flex;gap:8px;margin-bottom:16px;}
+.av{flex:1;aspect-ratio:1;border-radius:14px;background:var(--surface2);border:2px solid transparent;
+  display:flex;align-items:center;justify-content:center;font-size:21px;}
+.av.on{border-color:var(--cyan);background:oklch(0.30 0.08 200/.35);}
+
+/* ---------- module list ---------- */
+.modcard{width:100%;display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:15px;margin-bottom:11px;text-align:left;}
+.modcard:disabled{opacity:.45;}
+.modcard .mi{flex:none;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface2);}
+.modcard .mb{flex:1;min-width:0;}
+.modcard .mb .kk{font-size:10.5px;color:var(--dim);font-weight:600;}
+.modcard .mb h4{font-size:15px;margin:2px 0 6px;}
+.modcard .mbar{height:6px;border-radius:999px;background:var(--surface2);overflow:hidden;}
+.modcard .mbar i{display:block;height:100%;background:var(--cyan);}
+.modcard .ms{font-size:10.5px;color:var(--amber);margin-top:5px;font-weight:600;}
+.modcard.done .mi{background:oklch(0.75 0.15 145/.2);}
+.modcard.boss{border-color:var(--violet);background:oklch(0.70 0.17 300/.12);}
+.modcard.boss .mi{background:oklch(0.70 0.17 300/.25);}
+
+/* ---------- level list ---------- */
+.lvl{width:100%;display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);
+  border-radius:15px;padding:12px 13px;margin-bottom:8px;text-align:left;}
+.lvl:disabled{opacity:.42;}
+.lvl .n{flex:none;width:40px;height:40px;border-radius:12px;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:14px;color:var(--cyan);}
+.lvl .b{flex:1;min-width:0;}
+.lvl .b h4{font-size:14px;margin:0 0 3px;}
+.lvl .b p{font-size:10.5px;color:var(--dim);margin:0;}
+.lvl .st{font-size:11.5px;letter-spacing:1px;color:var(--amber);flex:none;}
+.tagk{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;margin-right:5px;vertical-align:1px;}
+.tagk.build{background:oklch(0.75 0.14 200/.2);color:var(--cyan);}
+.tagk.ident{background:oklch(0.82 0.15 85/.2);color:var(--amber);}
+.tagk.iso{background:oklch(0.70 0.17 300/.2);color:var(--violet);}
+
+/* ---------- play ---------- */
+.goal{flex:none;margin:0 14px 8px;background:var(--surface);border:1px solid var(--border);border-radius:15px;
+  padding:12px 14px;display:flex;align-items:center;gap:13px;}
+.goal .gl{flex:1;min-width:0;}
+.goal .gk{font-size:10.5px;color:var(--dim);font-weight:600;margin-bottom:3px;}
+.goal .gf{font-family:var(--fd);font-size:25px;font-weight:700;color:var(--amber);line-height:1.15;}
+.goal .gn{font-size:11.5px;color:var(--text);margin-top:3px;}
+.goal .gt{flex:none;width:96px;height:66px;background:oklch(0.19 0.02 258);border-radius:11px;padding:3px;}
+.goal .gt svg{width:100%;height:100%;}
+#canvas{flex:1;min-height:170px;margin:0 14px;position:relative;border:1px solid var(--border);border-radius:16px;
+  background:radial-gradient(oklch(0.30 0.03 258) 1px,transparent 1.4px) 0 0/16px 16px,var(--surface);overflow:hidden;}
+#svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;}
+#condensed{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
+#condensed .cf{font-family:var(--fd);font-size:27px;font-weight:600;word-break:break-all;line-height:1.4;}
+#condensed .cl{font-size:11.5px;color:var(--dim);margin-top:10px;}
+#p-livebox{position:absolute;left:10px;top:10px;display:flex;align-items:center;gap:7px;
+  background:oklch(0.16 0.03 260/.82);border:1px solid var(--border);border-radius:999px;padding:6px 13px;}
+#p-livebox .lk{font-size:10.5px;color:var(--dim);}
+#p-livebox b{font-family:var(--fd);font-size:14px;color:var(--cyan);}
+#p-livebox.ok b{color:var(--green);}
+.hintfab{position:absolute;right:10px;bottom:10px;width:46px;height:46px;border-radius:50%;
+  background:var(--amber);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 6px 14px oklch(0 0 0/.4);}
+.msg{flex:none;margin:9px 14px 0;font-size:11.5px;line-height:1.5;color:var(--dim);text-align:center;min-height:34px;
+  display:flex;align-items:center;justify-content:center;}
+.msg.warn{color:var(--amber);}
+.msg.good{color:var(--green);}
+.seg{flex:none;display:flex;gap:4px;margin:8px 14px 0;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:4px;}
+.seg button{flex:1;font-size:11.5px;font-weight:600;padding:11px 2px;border-radius:9px;color:var(--dim);min-height:42px;}
+.seg button.on{background:var(--cyan);color:var(--bg);}
+.tray{flex:none;display:flex;gap:8px;align-items:center;padding:12px 14px 14px;}
+.el{width:50px;height:50px;flex:none;border-radius:14px;font-family:var(--fd);font-weight:700;font-size:17px;
+  display:flex;align-items:center;justify-content:center;border:2px solid transparent;}
+.el.on{border-color:var(--cyan);transform:translateY(-2px);}
+.el-C{background:var(--atomC);color:#fff;}
+.el-O{background:var(--atomO);color:#fff;}
+.el-N{background:var(--atomN);color:#fff;}
+.trsep{width:1px;height:32px;background:var(--border);flex:none;}
+.tbtn{flex:1;height:50px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--dim);}
+.found{flex:none;display:flex;gap:7px;padding:0 14px;margin-top:8px;}
+.fslot{flex:1;height:52px;border-radius:12px;border:1.5px dashed var(--border);background:oklch(0.19 0.02 258);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.fslot.on{border-style:solid;border-color:var(--green);background:oklch(0.75 0.15 145/.1);}
+.fslot svg{width:100%;height:100%;}
+#p-choices{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:12px 14px 16px;}
+.choice{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:15px 6px;
+  font-family:var(--fd);font-size:17px;font-weight:600;min-height:58px;display:flex;align-items:center;justify-content:center;}
+.choice.wrong{border-color:var(--red);opacity:.5;}
+.choice.right{border-color:var(--green);background:oklch(0.75 0.15 145/.15);}
+
+/* ---------- guide / article ---------- */
+.gcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:12px;}
+.gvis{background:oklch(0.19 0.02 258);border-radius:11px;padding:6px;margin-bottom:11px;}
+.gvis svg{width:100%;height:92px;display:block;}
+.gcard .gstep{margin-bottom:0;}
+.gstep{display:flex;gap:13px;margin-bottom:16px;}
+.gstep .gi{flex:none;width:38px;height:38px;border-radius:12px;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;color:var(--cyan);font-size:14px;}
+.gstep .gb h4{font-size:14px;margin:0 0 4px;}
+.gstep .gb p{font-size:12px;color:var(--dim);margin:0;line-height:1.6;}
+.artbody h4{font-family:var(--fd);font-size:15px;margin:20px 0 8px;color:var(--cyan);}
+.artbody p{font-size:13px;line-height:1.8;color:var(--text);margin:0 0 10px;}
+.artbody ul{margin:0 0 12px;padding-left:20px;font-size:13px;line-height:1.8;color:var(--dim);}
+.artbody b{color:var(--amber);}
+.exbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin:12px 0;text-align:center;}
+.exbox svg{width:100%;height:82px;}
+.exbox .cap{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5;}
+.exbox .cap b{color:var(--amber);}
+.expair{display:flex;gap:9px;margin:12px 0;}
+.expair .exbox{flex:1;min-width:0;margin:0;padding:10px 8px;}
+.expair .exbox svg{height:64px;}
+.subh{font-size:12.5px;color:var(--cyan);font-weight:600;margin:16px 0 8px;line-height:1.5;}
+.fgrow{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--border);
+  border-radius:13px;padding:10px 11px;margin-bottom:8px;}
+.fgrow svg{flex:none;width:86px;height:58px;background:oklch(0.19 0.02 258);border-radius:9px;}
+.fgrow .fgt{flex:1;min-width:0;}
+.fgrow .fgt b{display:block;font-family:var(--fd);font-size:12.5px;color:var(--amber);margin-bottom:3px;}
+.fgrow .fgt span{font-size:11px;color:var(--dim);line-height:1.55;}
+.ktable{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 12px;}
+.ktable td{padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:top;}
+.ktable td:first-child{font-family:var(--fd);color:var(--amber);white-space:nowrap;width:34%;}
+.locked{opacity:.45;}
+
+/* ---------- summary ---------- */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:13px;}
+.stat .v{font-family:var(--fd);font-size:21px;font-weight:700;}
+.stat .v.sm{font-size:13.5px;color:var(--amber);}
+.stat .l{font-size:10.5px;color:var(--dim);margin-top:3px;}
+.mrow{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:12px 13px;margin-bottom:8px;}
+.mrow .mi{flex:none;width:36px;height:36px;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.mrow .mb{flex:1;min-width:0;}
+.mrow .mb h4{font-size:13px;margin:0 0 4px;}
+.mrow .mb .bar{height:5px;border-radius:999px;background:var(--surface2);overflow:hidden;}
+.mrow .mb .bar i{display:block;height:100%;background:var(--cyan);}
+.mrow .sv{font-size:11.5px;color:var(--amber);font-weight:600;flex:none;}
+.jgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:18px;}
+.jcell{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:7px 4px;text-align:center;}
+.jcell svg{width:100%;height:42px;}
+.jcell .nm{font-size:10.5px;color:var(--dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sendbox{flex:none;padding:12px 18px 16px;border-top:1px solid var(--border);}
+.sendst{text-align:center;font-size:11px;color:var(--dim);margin-top:9px;line-height:1.5;}
+.sendst.ok{color:var(--green);}
+.sendst.err{color:var(--amber);}
+
+/* ---------- test ---------- */
+.qnav{flex:none;display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.qchip{flex:none;width:44px;height:44px;border-radius:12px;background:var(--surface);border:1.5px solid var(--border);
+  font-size:13.5px;font-weight:600;color:var(--dim);display:flex;align-items:center;justify-content:center;}
+.qchip.done{border-color:var(--cyan);color:var(--cyan);background:oklch(0.75 0.14 200/.14);}
+.qchip.cur{background:var(--cyan);color:var(--bg);border-color:var(--cyan);}
+.qchip.cur.done{box-shadow:0 0 0 2px var(--green);}
+.qscroll{flex:1;overflow-y:auto;min-height:0;padding:0 14px;}
+.qprompt{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px;
+  font-size:13.5px;line-height:1.65;margin-bottom:11px;}
+.qprompt .qtag{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px;
+  background:oklch(0.70 0.17 300/.2);color:var(--violet);margin-bottom:6px;}
+#q-figure{margin-bottom:11px;}
+.qfig{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px;}
+.qfig svg{width:100%;height:112px;display:block;}
+.qpair{display:flex;gap:9px;}
+.qpair .qfig{flex:1;min-width:0;}
+.qpair .qfig svg{height:86px;}
+.qfig .fl{text-align:center;font-size:11px;color:var(--dim);margin-top:4px;}
+#q-options{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;}
+.qopt{background:var(--surface);border:2px solid var(--border);border-radius:13px;padding:14px 15px;
+  font-size:14px;text-align:left;min-height:52px;display:flex;align-items:center;gap:10px;line-height:1.5;}
+.qopt .ol{flex:none;width:24px;height:24px;border-radius:8px;background:var(--surface2);color:var(--dim);
+  font-family:var(--fd);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.qopt.on{border-color:var(--cyan);background:oklch(0.75 0.14 200/.12);}
+.qopt.on .ol{background:var(--cyan);color:var(--bg);}
+#q-options.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+#q-options.grid .qopt{flex-direction:column;align-items:stretch;padding:8px;min-height:0;}
+#q-options.grid .qopt svg{width:100%;height:74px;}
+#q-options.grid .qopt .ol{align-self:flex-start;}
+#q-canvas{position:relative;height:250px;border:1px solid var(--border);border-radius:15px;margin-bottom:10px;
+  background:radial-gradient(oklch(0.30 0.03 258) 1px,transparent 1.4px) 0 0/16px 16px,var(--surface);overflow:hidden;}
+#q-svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;}
+#q-livebox{position:absolute;left:9px;top:9px;display:flex;align-items:center;gap:6px;
+  background:oklch(0.16 0.03 260/.82);border:1px solid var(--border);border-radius:999px;padding:5px 11px;}
+#q-livebox .lk{font-size:10.5px;color:var(--dim);}
+#q-livebox b{font-family:var(--fd);font-size:13px;color:var(--cyan);}
+#q-build .tray{padding:0 0 14px;}
+.qfoot{flex:none;padding:10px 14px 12px;border-top:1px solid var(--border);}
+.qrow{display:flex;gap:8px;margin-bottom:8px;}
+.qrow .btn{font-size:13.5px;padding:12px;min-height:46px;}
+#q-submit{font-size:14px;padding:13px;min-height:48px;}
+/* ---------- result ---------- */
+.scorebox{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 18px;text-align:center;margin-bottom:18px;}
+.scorebox .sc{font-family:var(--fd);font-size:44px;font-weight:700;line-height:1;color:var(--cyan);}
+.scorebox .scl{font-size:12px;color:var(--dim);margin-top:5px;}
+.scbar{height:8px;border-radius:999px;background:var(--surface2);overflow:hidden;margin:14px 0 10px;}
+.scbar i{display:block;height:100%;background:var(--cyan);border-radius:999px;transition:width .6s;}
+.scorebox .scmsg{font-size:12.5px;line-height:1.6;color:var(--text);}
+.rrow{display:flex;gap:11px;background:var(--surface);border:1px solid var(--border);border-radius:13px;
+  padding:11px 12px;margin-bottom:8px;align-items:flex-start;}
+.rrow .rm{flex:none;width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.rrow.ok .rm{background:oklch(0.75 0.15 145/.2);color:var(--green);}
+.rrow.no .rm{background:oklch(0.66 0.19 25/.2);color:var(--red);}
+.rrow .rb{flex:1;min-width:0;}
+.rrow .rb .rq{font-size:12px;line-height:1.55;margin-bottom:4px;}
+.rrow .rb .ra{font-size:11px;color:var(--dim);line-height:1.5;}
+.rrow .rb .ra b{color:var(--green);}
+/* ---------- sync chip ---------- */
+.syncchip{display:flex;align-items:center;gap:7px;justify-content:center;margin-top:10px;
+  font-size:10.5px;color:var(--dim);}
+.syncchip .dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex:none;}
+.syncchip[data-st="saving"] .dot{background:var(--amber);animation:blink 1s infinite;}
+.syncchip[data-st="ok"] .dot{background:var(--green);}
+.syncchip[data-st="err"] .dot{background:var(--amber);}
+.syncchip[data-st="ok"] .lbl{color:var(--green);}
+@keyframes blink{50%{opacity:.25}}
+/* ---------- short screens (landscape phones) ----------
+   the play screen has no scroll container, so on a short viewport the tray
+   would be clipped by #app's overflow:hidden and become unreachable */
+@media (max-height:560px){
+  #s-home .inner{justify-content:flex-start;padding:16px 24px;overflow-y:auto;}
+  .brand{font-size:26px;margin:8px 0 2px;}
+  .tag{margin-bottom:14px;}
+  #s-home svg{width:48px;height:48px;}
+  .top{padding:7px 14px;}
+  .goal{padding:8px 12px;margin-bottom:6px;}
+  .goal .gf{font-size:20px!important;}
+  .goal .gt{width:80px;height:52px;}
+  #canvas{min-height:110px;}
+  .msg{min-height:22px;margin-top:5px;}
+  .seg{margin-top:5px;}
+  .seg button{padding:8px 2px;min-height:38px;}
+  .el{width:44px;height:44px;font-size:15px;}
+  .tbtn{height:44px;}
+  .tray{padding:7px 14px 9px;gap:6px;}
+  #q-canvas{height:180px;}
+}
+/* ---------- overlay / toast ---------- */
+#ovl{position:absolute;inset:0;background:oklch(0.11 0.02 260/.93);display:flex;align-items:center;justify-content:center;padding:26px;z-index:20;}
+.owin{width:100%;max-width:330px;background:var(--surface);border:1px solid var(--border);border-radius:22px;
+  padding:26px 20px;text-align:center;animation:pop .32s cubic-bezier(.2,1.3,.5,1);}
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.owin .big{font-size:44px;line-height:1;}
+.owin h2{font-size:21px;margin:12px 0 5px;}
+.owin .stars{font-size:26px;letter-spacing:5px;color:var(--amber);margin:10px 0 6px;}
+.owin p{font-size:12.5px;color:var(--dim);line-height:1.65;margin:0 0 18px;}
+.owin svg{width:100%;height:66px;margin:6px 0 2px;}
+#toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);z-index:30;
+  background:oklch(0.30 0.03 258);border:1px solid var(--border);border-radius:999px;padding:10px 18px;
+  font-size:12px;white-space:nowrap;box-shadow:0 8px 20px oklch(0 0 0/.45);max-width:90%;}
+</style>
+
+<div id="app">
+
+<!-- ========== HOME ========== -->
+<section class="screen" id="s-home">
+  <div class="safetop"></div>
+  <div class="inner">
+    <svg width="72" height="72" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <line x1="40" y1="27" x2="22" y2="46" stroke="oklch(0.75 0.14 200)" stroke-width="3.5"/>
+      <line x1="40" y1="27" x2="58" y2="46" stroke="oklch(0.75 0.14 200)" stroke-width="3.5"/>
+      <line x1="27" y1="52" x2="53" y2="52" stroke="oklch(0.75 0.14 200)" stroke-width="3.5"/>
+      <circle cx="40" cy="18" r="9.5" fill="oklch(0.55 0.01 260)" stroke="oklch(0.92 0.01 260)" stroke-width="2"/>
+      <circle cx="18" cy="52" r="9.5" fill="oklch(0.66 0.19 25)" stroke="oklch(0.92 0.01 260)" stroke-width="2"/>
+      <circle cx="62" cy="52" r="9.5" fill="oklch(0.62 0.16 260)" stroke="oklch(0.92 0.01 260)" stroke-width="2"/>
+    </svg>
+    <h1 class="brand">Mole<span>Quest</span></h1>
+    <p class="tag">ต่อโครงสร้าง สร้างความเข้าใจ<br>สูตรโครงสร้างสารประกอบอินทรีย์ · เคมี ม.6</p>
+
+    <div id="h-setup" class="card" style="width:100%;text-align:left">
+      <p class="flabel">ชื่อผู้เล่น</p>
+      <input id="i-name" placeholder="พิมพ์ชื่อของคุณ" autocomplete="off" maxlength="40">
+      <p class="flabel">ห้องเรียน (ไม่บังคับ)</p>
+      <input id="i-class" placeholder="เช่น 6/2" autocomplete="off" maxlength="24">
+      <p class="flabel">เลือกอวตาร</p>
+      <div class="avrow" id="avrow"></div>
+      <button class="btn btn-p" id="b-save">เริ่มต้นใช้งาน</button>
+    </div>
+
+    <div id="h-main" hidden style="width:100%">
+      <div class="hello" id="h-hello">สวัสดี</div>
+      <div class="prog-wrap">
+        <div class="prog-bar"><i class="prog-fill" id="h-fill" style="width:0%"></i></div>
+        <div class="prog-txt" id="h-ptxt">—</div>
+        <div class="syncchip" data-sync><span class="dot"></span><span class="lbl">—</span></div>
+      </div>
+      <button class="btn btn-p" id="b-play">เริ่มเล่น</button>
+      <div class="homelinks">
+        <button class="hlink" id="b-guide"><span class="i">📖</span>คู่มือการเล่น</button>
+        <button class="hlink" id="b-know"><span class="i">💡</span>คลังความรู้</button>
+        <button class="hlink" id="b-sum"><span class="i">📊</span>สรุปผล</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODULES ========== -->
+<section class="screen" id="s-mods" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="mo-back">←</button>
+    <div class="ttl"><div class="k" id="mo-who">ผู้เล่น</div><h3>เลือกบทเรียน</h3></div>
+    <div class="pill" id="mo-stars">★ 0</div>
+  </div>
+  <div class="scroll" style="padding:0 16px 20px" id="mo-list"></div>
+</section>
+
+<!-- ========== LEVELS ========== -->
+<section class="screen" id="s-lv" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="lv-back">←</button>
+    <div class="ttl"><div class="k" id="lv-k">บทเรียน</div><h3 id="lv-title">—</h3></div>
+    <div class="pill" id="lv-stars">★ 0</div>
+  </div>
+  <div class="scroll" style="padding:0 16px 20px" id="lv-list"></div>
+</section>
+
+<!-- ========== PLAY ========== -->
+<section class="screen" id="s-play" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="p-back">←</button>
+    <div class="ttl"><div class="k" id="p-world">บทที่ 1</div><h3 id="p-name">ด่าน</h3></div>
+    <div class="pill" id="p-hint">💡 <span id="p-hintn">2</span></div>
+  </div>
+  <div class="goal">
+    <div class="gl">
+      <div class="gk" id="p-gk">เป้าหมาย</div>
+      <div class="gf" id="p-target">C₂H₆</div>
+      <div class="gn" id="p-gname"></div>
+    </div>
+    <div class="gt" id="p-gt" hidden><svg id="p-gtsvg"></svg></div>
+  </div>
+  <div id="canvas">
+    <svg id="svg"></svg>
+    <div id="condensed" hidden><div class="cf" id="p-cond">CH₄</div><div class="cl">สูตรโครงสร้างแบบย่อของสิ่งที่คุณสร้าง</div></div>
+    <div id="p-livebox"><span class="lk">กำลังสร้าง</span><b id="p-live">CH₄</b></div>
+    <button class="hintfab" id="p-fab">💡</button>
+  </div>
+  <div class="msg" id="p-msg"></div>
+  <div class="found" id="p-found" hidden></div>
+  <div id="p-buildui">
+    <div class="seg">
+      <button data-v="skeleton" class="on">เส้นและมุม</button>
+      <button data-v="full">แบบเต็ม</button>
+      <button data-v="condensed">แบบย่อ</button>
+    </div>
+    <div class="tray">
+      <button class="el el-C on" data-el="C">C</button>
+      <button class="el el-O" data-el="O">O</button>
+      <button class="el el-N" data-el="N">N</button>
+      <div class="trsep"></div>
+      <button class="tbtn" id="p-del">ลบอะตอม</button>
+      <button class="tbtn" id="p-clear">เริ่มใหม่</button>
+    </div>
+  </div>
+  <div id="p-choices" hidden></div>
+  <div class="safebot"></div>
+</section>
+
+<!-- ========== GUIDE ========== -->
+<section class="screen" id="s-guide" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="g-back">←</button>
+    <div class="ttl"><div class="k">วิธีเล่น</div><h3>คู่มือการเล่น</h3></div>
+  </div>
+  <div class="scroll" style="padding:0 18px 24px" id="g-body"></div>
+</section>
+
+<!-- ========== KNOWLEDGE LIST ========== -->
+<section class="screen" id="s-know" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="k-back">←</button>
+    <div class="ttl"><div class="k">ปลดล็อกเมื่อจบแต่ละบท</div><h3>คลังความรู้</h3></div>
+  </div>
+  <div class="scroll" style="padding:0 16px 20px" id="k-list"></div>
+</section>
+
+<!-- ========== ARTICLE ========== -->
+<section class="screen" id="s-art" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="a-back">←</button>
+    <div class="ttl"><div class="k">คลังความรู้</div><h3 id="a-title">—</h3></div>
+  </div>
+  <div class="scroll artbody" style="padding:0 18px 26px" id="a-body"></div>
+</section>
+
+<!-- ========== TEST (quiz / exam) ========== -->
+<section class="screen" id="s-test" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="q-exit">✕</button>
+    <div class="ttl"><div class="k" id="q-kind">ทดสอบย่อย</div><h3 id="q-title">—</h3></div>
+    <div class="pill" id="q-count">1/10</div>
+  </div>
+  <div class="qnav" id="q-nav"></div>
+  <div class="qscroll">
+    <div class="qprompt" id="q-prompt"></div>
+    <div id="q-figure"></div>
+    <div id="q-options"></div>
+    <div id="q-build" hidden>
+      <div id="q-canvas"><svg id="q-svg"></svg>
+        <div id="q-livebox"><span class="lk">กำลังสร้าง</span><b id="q-live">CH₄</b></div></div>
+      <div class="tray">
+        <button class="el el-C on" data-qel="C">C</button>
+        <button class="el el-O" data-qel="O">O</button>
+        <button class="el el-N" data-qel="N">N</button>
+        <div class="trsep"></div>
+        <button class="tbtn" id="q-del">ลบอะตอม</button>
+        <button class="tbtn" id="q-clear">ล้างข้อนี้</button>
+      </div>
+    </div>
+  </div>
+  <div class="qfoot">
+    <div class="qrow">
+      <button class="btn btn-o" id="q-prev">← ก่อนหน้า</button>
+      <button class="btn btn-o" id="q-next">ถัดไป →</button>
+    </div>
+    <button class="btn btn-g" id="q-submit" disabled>ตอบให้ครบทุกข้อก่อนส่ง</button>
+  </div>
+  <div class="safebot"></div>
+</section>
+
+<!-- ========== TEST RESULT ========== -->
+<section class="screen" id="s-res" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="r-back">←</button>
+    <div class="ttl"><div class="k" id="r-kind">ผลการทดสอบ</div><h3 id="r-title">—</h3></div>
+  </div>
+  <div class="scroll" style="padding:0 18px 18px">
+    <div class="scorebox"><div class="sc" id="r-score">0</div><div class="scl" id="r-scl">คะแนน</div>
+      <div class="scbar"><i id="r-bar"></i></div><div class="scmsg" id="r-msg"></div></div>
+    <div class="sech">รายข้อ</div>
+    <div id="r-list"></div>
+  </div>
+  <div class="sendbox">
+    <button class="btn btn-p" id="r-done">เสร็จสิ้น</button>
+  </div>
+  <div class="safebot"></div>
+</section>
+
+<!-- ========== SUMMARY ========== -->
+<section class="screen" id="s-sum" hidden>
+  <div class="safetop"></div>
+  <div class="top">
+    <button class="ico" id="u-back">←</button>
+    <div class="ttl"><div class="k" id="u-class">—</div><h3 id="u-name">สรุปผลการเรียนรู้</h3></div>
+  </div>
+  <div class="scroll" style="padding:0 18px 18px">
+    <div class="stats" id="u-stats"></div>
+    <div class="sech">คะแนนแบบทดสอบ</div>
+    <div id="u-tests"></div>
+    <div class="sech">ความคืบหน้าแต่ละบท</div>
+    <div id="u-mods"></div>
+    <div class="sech">สมุดบันทึกโมเลกุล</div>
+    <div class="jgrid" id="u-journal"></div>
+  </div>
+  <div class="sendbox">
+    <button class="btn btn-g" id="u-send">ซิงก์ผลการเรียนรู้</button>
+    <div class="syncchip" data-sync style="margin:10px auto 0;width:fit-content"><span class="dot"></span><span class="lbl">—</span></div>
+  </div>
+  <div class="safebot"></div>
+</section>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= chemistry core ================= */
+var VAL={C:4,O:2,N:3};
+var BL=56;
+var SUB='₀₁₂₃₄₅₆₇₈₉';
+function sub(n){return String(n).split('').map(function(d){return SUB[+d];}).join('');}
+function mkMol(){return {atoms:[{id:1,el:'C',x:0,y:0}],bonds:[],next:2};}
+function A(m,id){for(var i=0;i<m.atoms.length;i++)if(m.atoms[i].id===id)return m.atoms[i];return null;}
+function BO(m,id){return m.bonds.filter(function(b){return b.a===id||b.b===id;});}
+function oth(b,id){return b.a===id?b.b:b.a;}
+function usedVal(m,id){return BO(m,id).reduce(function(s,b){return s+b.order;},0);}
+function freeVal(m,id){var a=A(m,id);return a?VAL[a.el]-usedVal(m,id):0;}
+function angDiff(a,b){var d=Math.abs(a-b)%(2*Math.PI);return d>Math.PI?2*Math.PI-d:d;}
+function adjMap(m){
+  var d={};
+  m.atoms.forEach(function(a){d[a.id]={};});
+  m.bonds.forEach(function(b){d[b.a][b.b]=b.order;d[b.b][b.a]=b.order;});
+  return d;
+}
+function counts(m){
+  var c={},h=0;
+  m.atoms.forEach(function(a){c[a.el]=(c[a.el]||0)+1;h+=Math.max(0,freeVal(m,a.id));});
+  if(h)c.H=(c.H||0)+h;
+  return c;
+}
+function fkeys(c){
+  var rest=Object.keys(c).filter(function(k){return k!=='C'&&k!=='H';}).sort();
+  return ['C','H'].concat(rest);
+}
+function plainFormula(m){
+  var c=counts(m);
+  return fkeys(c).filter(function(k){return c[k];}).map(function(k){return k+(c[k]>1?c[k]:'');}).join('');
+}
+function prettyFormula(m){
+  var c=counts(m);
+  return fkeys(c).filter(function(k){return c[k];}).map(function(k){return k+(c[k]>1?sub(c[k]):'');}).join('');
+}
+function prettyOf(pf){
+  return pf.replace(/([A-Z][a-z]?)(\d*)/g,function(_,e,n){return e+(n?sub(+n):'');});
+}
+/* graph isomorphism — works for rings, unlike a tree canonical form */
+function bfsOrder(m){
+  if(!m.atoms.length)return [];
+  var adj=adjMap(m),seen={},out=[],q=[m.atoms[0].id];
+  seen[m.atoms[0].id]=true;
+  while(q.length){
+    var u=q.shift();out.push(u);
+    Object.keys(adj[u]).forEach(function(v){v=+v;if(!seen[v]){seen[v]=true;q.push(v);}});
+  }
+  m.atoms.forEach(function(a){if(!seen[a.id])out.push(a.id);});
+  return out;
+}
+function sameMolecule(m1,m2){
+  if(m1.atoms.length!==m2.atoms.length)return false;
+  if(m1.bonds.length!==m2.bonds.length)return false;
+  var sig=function(m){return m.atoms.map(function(a){return a.el+':'+freeVal(m,a.id)+':'+BO(m,a.id).length;}).sort().join('|');};
+  if(sig(m1)!==sig(m2))return false;
+  var ids1=bfsOrder(m1),ids2=m2.atoms.map(function(a){return a.id;});
+  var a1=adjMap(m1),a2=adjMap(m2);
+  var key=function(m,id){return A(m,id).el+':'+freeVal(m,id)+':'+BO(m,id).length;};
+  var map={},used={};
+  function bt(i){
+    if(i>=ids1.length)return true;
+    var u=ids1[i];
+    for(var j=0;j<ids2.length;j++){
+      var v=ids2[j];
+      if(used[v])continue;
+      if(key(m1,u)!==key(m2,v))continue;
+      var ok=true;
+      for(var k=0;k<i;k++){
+        var p=ids1[k];
+        if((a1[u][p]||0)!==(a2[v][map[p]]||0)){ok=false;break;}
+      }
+      if(!ok)continue;
+      map[u]=v;used[v]=true;
+      if(bt(i+1))return true;
+      delete map[u];delete used[v];
+    }
+    return false;
+  }
+  return bt(0);
+}
+/* find one ring (these molecules carry at most one) */
+function findRing(m){
+  if(m.bonds.length<m.atoms.length)return null;
+  var adj=adjMap(m),par={},seen={},ring=null;
+  function dfs(u,p){
+    seen[u]=true;par[u]=p;
+    var nb=Object.keys(adj[u]).map(Number);
+    for(var i=0;i<nb.length&&!ring;i++){
+      var v=nb[i];
+      if(v===p)continue;
+      if(seen[v]){
+        var path=[u],x=u;
+        while(x!==v&&par[x]!=null){x=par[x];path.push(x);}
+        if(x===v&&path.length>2)ring=path;
+      }else dfs(v,u);
+    }
+  }
+  dfs(m.atoms[0].id,null);
+  return ring;
+}
+/* an atom may go if what remains stays in one piece — that allows deleting
+   from a ring (it just opens into a chain) but not from the middle of a chain */
+function canDelete(m,id){
+  if(m.atoms.length<=1)return false;
+  var keep=m.atoms.filter(function(a){return a.id!==id;}).map(function(a){return a.id;});
+  var adj={};
+  keep.forEach(function(k){adj[k]=[];});
+  m.bonds.forEach(function(b){
+    if(b.a===id||b.b===id)return;
+    adj[b.a].push(b.b);adj[b.b].push(b.a);
+  });
+  var seen={},q=[keep[0]],n=1;
+  seen[keep[0]]=true;
+  while(q.length){
+    var u=q.shift();
+    adj[u].forEach(function(v){if(!seen[v]){seen[v]=true;n++;q.push(v);}});
+  }
+  return n===keep.length;
+}
+function pointInRing(m,ring,x,y){
+  if(!ring)return false;
+  var inside=false;
+  for(var i=0,j=ring.length-1;i<ring.length;j=i++){
+    var pi=A(m,ring[i]),pj=A(m,ring[j]);
+    if(((pi.y>y)!==(pj.y>y))&&(x<(pj.x-pi.x)*(y-pi.y)/(pj.y-pi.y)+pi.x))inside=!inside;
+  }
+  return inside;
+}
+
+function bondDirs(m,id){
+  var a=A(m,id);
+  return BO(m,id).map(function(b){
+    var o=A(m,oth(b,id));
+    return {ang:Math.atan2(o.y-a.y,o.x-a.x),order:b.order};
+  });
+}
+/* Candidate attachment points. Skeletal formulas are drawn ZIGZAG at 120°;
+   a straight line is only correct around a triple bond (sp, 180°). */
+function budsFor(m,id){
+  var free=freeVal(m,id);
+  if(free<=0)return [];
+  var a=A(m,id),ring=findRing(m),dirs=bondDirs(m,id);
+  var tri=dirs.filter(function(d){return d.order===3;})[0];
+  var wanted=[];
+  if(tri){
+    wanted=[tri.ang+Math.PI];                                   /* sp — linear */
+  }else if(dirs.length===0){
+    wanted=[-Math.PI/6,Math.PI/6,Math.PI*5/6,-Math.PI*5/6];     /* classic 30° start angles */
+  }else if(dirs.length===1){
+    wanted=[dirs[0].ang+2*Math.PI/3,dirs[0].ang-2*Math.PI/3];   /* the two zigzag turns */
+  }else{
+    var sc=[];
+    for(var d=0;d<360;d+=15){
+      var r=d*Math.PI/180,mn=Math.PI;
+      dirs.forEach(function(t){mn=Math.min(mn,angDiff(r,t.ang));});
+      sc.push({r:r,s:mn});
+    }
+    sc.sort(function(p,q){return q.s-p.s;});
+    wanted=sc.map(function(c){return c.r;});
+  }
+  var out=[];
+  wanted.forEach(function(r){
+    if(out.length>=free)return;
+    var x=a.x+Math.cos(r)*BL,y=a.y+Math.sin(r)*BL,bad=false;
+    dirs.forEach(function(t){if(angDiff(r,t.ang)<0.7)bad=true;});
+    m.atoms.forEach(function(p){if(Math.hypot(p.x-x,p.y-y)<BL*0.75)bad=true;});
+    out.forEach(function(o){if(angDiff(o.r,r)<0.85)bad=true;});
+    if(pointInRing(m,ring,x,y))bad=true;
+    if(!bad)out.push({x:x,y:y,r:r});
+  });
+  return out;
+}
+/* existing atoms the selected atom could bond to, closing a ring */
+function linksFor(m,id){
+  if(freeVal(m,id)<=0)return [];
+  /* only the two ENDS of a chain may join — otherwise a growing chain always
+     offers to close a 3-ring onto the atom two back, which is a trap */
+  if(BO(m,id).length>1)return [];
+  var a=A(m,id),bonded={};
+  BO(m,id).forEach(function(b){bonded[oth(b,id)]=true;});
+  var out=[];
+  m.atoms.forEach(function(o){
+    if(o.id===id||bonded[o.id])return;
+    if(freeVal(m,o.id)<=0||BO(m,o.id).length>1)return;
+    var d=Math.hypot(o.x-a.x,o.y-a.y);
+    if(d>BL*2.4)return;
+    out.push({id:o.id,x:(a.x+o.x)/2,y:(a.y+o.y)/2,d:d});
+  });
+  out.sort(function(p,q){return p.d-q.d;});
+  return out.slice(0,2);
+}
+/* Lay a molecule out as a proper skeletal formula: ring = regular polygon,
+   open chains ZIGZAG at 120°, and only sp (triple-bonded) atoms go straight. */
+function relayout(m){
+  var ring=findRing(m),placed={},meta={};
+  if(ring){
+    var n=ring.length,R=BL/(2*Math.sin(Math.PI/n));
+    ring.forEach(function(id,i){
+      var ang=-Math.PI/2+i*2*Math.PI/n,a=A(m,id);
+      a.x=Math.cos(ang)*R;a.y=Math.sin(ang)*R;placed[id]=true;
+      meta[id]={dir:ang,sign:1,ring:true};
+    });
+  }else{
+    var r0=m.atoms[0];r0.x=0;r0.y=0;placed[r0.id]=true;
+    meta[r0.id]={dir:-Math.PI/6,sign:1};
+  }
+  function freeSpot(au,ang){
+    var x=au.x+Math.cos(ang)*BL,y=au.y+Math.sin(ang)*BL,bad=false;
+    m.atoms.forEach(function(p){if(placed[p.id]&&Math.hypot(p.x-x,p.y-y)<BL*0.8)bad=true;});
+    if(pointInRing(m,ring,x,y))bad=true;
+    return bad?null:{x:x,y:y,a:ang};
+  }
+  var q=ring?ring.slice():[m.atoms[0].id],guard=0;
+  while(q.length&&guard++<400){
+    var u=q.shift(),au=A(m,u),mu=meta[u]||{dir:-Math.PI/6,sign:1};
+    var hasTri=BO(m,u).some(function(b){return b.order===3;});
+    var kids=BO(m,u).filter(function(b){return !placed[oth(b,u)];});
+    var k=0;
+    kids.forEach(function(b){
+      var v=oth(b,u),cands=[],chosen=null;
+      if(hasTri||b.order===3){
+        cands=[{a:mu.dir,off:0}];
+      }else if(mu.ring){
+        cands=[{a:mu.dir,off:0},{a:mu.dir+0.6,off:0},{a:mu.dir-0.6,off:0}];
+      }else if(k<2){
+        var s=mu.sign*(k===0?1:-1);
+        cands=[{a:mu.dir+s*Math.PI/3,off:s},{a:mu.dir-s*Math.PI/3,off:-s},
+               {a:mu.dir+s*2*Math.PI/3,off:s},{a:mu.dir-s*2*Math.PI/3,off:-s}];
+      }
+      k++;
+      for(var i=0;i<cands.length&&!chosen;i++){
+        var sp=freeSpot(au,cands[i].a);
+        if(sp){sp.off=cands[i].off;chosen=sp;}
+      }
+      if(!chosen){
+        /* third substituent onwards: take the widest remaining gap */
+        var used=BO(m,u).map(function(bb){return oth(bb,u);}).filter(function(w){return placed[w];})
+          .map(function(w){var aw=A(m,w);return Math.atan2(aw.y-au.y,aw.x-au.x);});
+        var best=null,bs=-1;
+        for(var d=0;d<360;d+=15){
+          var r=d*Math.PI/180,mn=Math.PI;
+          used.forEach(function(t){mn=Math.min(mn,angDiff(r,t));});
+          if(mn<=bs)continue;
+          var sp2=freeSpot(au,r);
+          if(sp2){bs=mn;best=sp2;}
+        }
+        chosen=best||{x:au.x+BL,y:au.y,a:0,off:0};
+      }
+      var av=A(m,v);av.x=chosen.x;av.y=chosen.y;placed[v]=true;
+      meta[v]={dir:chosen.a,sign:chosen.off?-chosen.off:mu.sign};
+      q.push(v);
+    });
+  }
+}
+function molFromSpec(sp){
+  var m={atoms:[],bonds:[],next:sp.atoms.length+1};
+  sp.atoms.forEach(function(el,i){m.atoms.push({id:i+1,el:el,x:0,y:0});});
+  sp.bonds.forEach(function(b){m.bonds.push({a:b[0]+1,b:b[1]+1,order:b[2]||1});});
+  relayout(m);
+  return m;
+}
+function hPos(m,id){
+  var n=Math.max(0,freeVal(m,id));if(!n)return [];
+  var a=A(m,id),ring=findRing(m);
+  var taken=BO(m,id).map(function(b){var o=A(m,oth(b,id));return Math.atan2(o.y-a.y,o.x-a.x);});
+  var out=[],HL=BL*0.55;
+  for(var d=0;d<360&&out.length<n;d+=30){
+    var r=d*Math.PI/180,ok=true;
+    taken.forEach(function(t){if(angDiff(r,t)<0.7)ok=false;});
+    var x=a.x+Math.cos(r)*HL,y=a.y+Math.sin(r)*HL;
+    m.atoms.forEach(function(o){if(o.id!==id&&Math.hypot(o.x-x,o.y-y)<BL*0.5)ok=false;});
+    out.forEach(function(p){if(angDiff(p.r,r)<0.7)ok=false;});
+    if(pointInRing(m,ring,x,y))ok=false;
+    if(ok)out.push({x:x,y:y,r:r});
+  }
+  while(out.length<n){
+    var k=out.length,r2=(k*53+17)*Math.PI/180;
+    out.push({x:a.x+Math.cos(r2)*HL,y:a.y+Math.sin(r2)*HL,r:r2});
+  }
+  return out.slice(0,n);
+}
+function longestPath(m){
+  function far(src){
+    var q=[[src]],best=[src],guard=0;
+    while(q.length&&guard++<5000){
+      var p=q.shift();
+      if(p.length>best.length)best=p;
+      var last=p[p.length-1];
+      BO(m,last).forEach(function(b){
+        var o=oth(b,last);
+        if(p.indexOf(o)<0)q.push(p.concat([o]));
+      });
+    }
+    return best;
+  }
+  if(!m.atoms.length)return [];
+  var p1=far(m.atoms[0].id);
+  return far(p1[p1.length-1]);
+}
+function atomTxt(m,id){
+  var a=A(m,id),h=Math.max(0,freeVal(m,id));
+  return a.el+(h>0?'H'+(h>1?sub(h):''):'');
+}
+function bondSym(o){return o===2?'=':o===3?'≡':'';}
+function branchStr(m,id,parent){
+  var s=atomTxt(m,id);
+  BO(m,id).filter(function(b){return oth(b,id)!==parent;}).forEach(function(b){
+    s+=bondSym(b.order)+branchStr(m,oth(b,id),id);
+  });
+  return s;
+}
+function condensedStr(m){
+  var ring=findRing(m);
+  if(ring){
+    var rs={};ring.forEach(function(id){rs[id]=true;});
+    var dbl=m.bonds.filter(function(b){return b.order===2&&rs[b.a]&&rs[b.b];}).length;
+    var arom=ring.length===6&&dbl===3&&ring.every(function(id){return A(m,id).el==='C';});
+    return (arom?'วงเบนซีน (อะโรมาติก) · ':'วง '+ring.length+' เหลี่ยม · ')+prettyFormula(m);
+  }
+  var path=longestPath(m);
+  if(path.length===1)return atomTxt(m,path[0]);
+  if(A(m,path[0]).el!=='C'&&A(m,path[path.length-1]).el==='C')path=path.slice().reverse();
+  var out='',used={};
+  for(var i=0;i<path.length;i++){
+    var id=path[i],prev=path[i-1],next=path[i+1];
+    if(A(m,id).el==='C'){
+      var dbO=null,ohO=null;
+      BO(m,id).forEach(function(b){
+        var o=oth(b,id);
+        if(o===prev)return;
+        if(A(m,o).el!=='O'||BO(m,o).length!==1)return;
+        if(b.order===2&&dbO===null)dbO=o;
+        else if(b.order===1&&freeVal(m,o)===1&&ohO===null)ohO=o;
+      });
+      if(dbO!==null&&ohO!==null){
+        out+='COOH';used[dbO]=true;used[ohO]=true;
+        if(next===dbO||next===ohO)break;
+        continue;
+      }
+    }
+    out+=atomTxt(m,id);
+    BO(m,id).forEach(function(b){
+      var o=oth(b,id);
+      if(o===prev||o===next||used[o])return;
+      out+='('+bondSym(b.order)+branchStr(m,o,id)+')';
+    });
+    if(i<path.length-1){
+      var nb=m.bonds.filter(function(b){return (b.a===id&&b.b===next)||(b.b===id&&b.a===next);})[0];
+      out+=bondSym(nb.order);
+    }
+  }
+  return out;
+}
+
+/* ================= drawing ================= */
+var NS='http://www.w3.org/2000/svg';
+function el(n,at){var e=document.createElementNS(NS,n);for(var k in at)e.setAttribute(k,at[k]);return e;}
+function lineParts(x1,y1,x2,y2,order){
+  var dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1,px=-dy/L,py=dx/L,o;
+  if(order===1)return [[x1,y1,x2,y2]];
+  if(order===2){o=3.8;return [[x1+px*o,y1+py*o,x2+px*o,y2+py*o],[x1-px*o,y1-py*o,x2-px*o,y2-py*o]];}
+  o=5.6;return [[x1,y1,x2,y2],[x1+px*o,y1+py*o,x2+px*o,y2+py*o],[x1-px*o,y1-py*o,x2-px*o,y2-py*o]];
+}
+function trimSeg(x1,y1,x2,y2,t1,t2){
+  var dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1;
+  return [x1+dx/L*t1,y1+dy/L*t1,x2-dx/L*t2,y2-dy/L*t2];
+}
+var COL={C:'var(--atomC)',O:'var(--atomO)',N:'var(--atomN)'};
+function drawMol(svg,m,opts){
+  opts=opts||{};
+  var view=opts.view||'skeleton',inter=!!opts.interactive,sel=opts.sel;
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  var full=view==='full',lone=m.atoms.length===1,labeled={};
+  m.atoms.forEach(function(a){labeled[a.id]=full||a.el!=='C'||lone;});
+  var pts=m.atoms.map(function(a){return {x:a.x,y:a.y};}),hs=[];
+  if(full)m.atoms.forEach(function(a){
+    hPos(m,a.id).forEach(function(p){hs.push({x:p.x,y:p.y,pid:a.id});pts.push(p);});
+  });
+  var buds=[],links=[];
+  if(inter&&sel!=null&&view!=='condensed'){
+    buds=budsFor(m,sel);links=linksFor(m,sel);
+    buds.forEach(function(b){pts.push(b);});
+  }
+  var minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  pts.forEach(function(p){minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);maxX=Math.max(maxX,p.x);maxY=Math.max(maxY,p.y);});
+  var pad=opts.pad||34;
+  minX-=pad;minY-=pad;maxX+=pad;maxY+=pad;
+  var w=maxX-minX,h=maxY-minY,ms=opts.minSize||230;
+  if(w<ms){var cx=(minX+maxX)/2;minX=cx-ms/2;w=ms;}
+  if(h<ms*0.72){var cy=(minY+maxY)/2;minY=cy-ms*0.36;h=ms*0.72;}
+  svg.setAttribute('viewBox',minX+' '+minY+' '+w+' '+h);
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  var g=el('g',{});svg.appendChild(g);
+
+  hs.forEach(function(p){
+    var a=A(m,p.pid),s=trimSeg(a.x,a.y,p.x,p.y,labeled[a.id]?13:0,10);
+    g.appendChild(el('line',{x1:s[0],y1:s[1],x2:s[2],y2:s[3],stroke:'var(--dim)','stroke-width':2.2,'stroke-linecap':'round'}));
+  });
+  var ringSet={},cen=null,dring=findRing(m);
+  if(dring){
+    var sx=0,sy=0;
+    dring.forEach(function(id){ringSet[id]=true;var p=A(m,id);sx+=p.x;sy+=p.y;});
+    cen={x:sx/dring.length,y:sy/dring.length};
+  }
+  m.bonds.forEach(function(b){
+    var a1=A(m,b.a),a2=A(m,b.b);
+    var s=trimSeg(a1.x,a1.y,a2.x,a2.y,labeled[b.a]?14:0,labeled[b.b]?14:0);
+    var mkLine=function(L){
+      g.appendChild(el('line',{x1:L[0],y1:L[1],x2:L[2],y2:L[3],stroke:'var(--text)','stroke-width':3.2,'stroke-linecap':'round'}));
+    };
+    /* a double bond inside a ring is drawn as one full line plus a shorter
+       inner line, the way benzene is written in a textbook */
+    if(b.order===2&&cen&&ringSet[b.a]&&ringSet[b.b]){
+      mkLine(s);
+      var mx=(s[0]+s[2])/2,my=(s[1]+s[3])/2,vx=cen.x-mx,vy=cen.y-my,vl=Math.hypot(vx,vy)||1;
+      var o=7.5;
+      mkLine(trimSeg(s[0]+vx/vl*o,s[1]+vy/vl*o,s[2]+vx/vl*o,s[3]+vy/vl*o,8,8));
+      return;
+    }
+    lineParts(s[0],s[1],s[2],s[3],b.order).forEach(mkLine);
+  });
+  hs.forEach(function(p){
+    g.appendChild(el('circle',{cx:p.x,cy:p.y,r:9.5,fill:'oklch(0.95 0 0)'}));
+    var t=el('text',{x:p.x,y:p.y+3.6,'font-size':10,'text-anchor':'middle',fill:'#222','font-family':'Kanit','font-weight':600});
+    t.textContent='H';g.appendChild(t);
+  });
+  m.atoms.forEach(function(a){
+    if(labeled[a.id]){
+      var txt=full?a.el:((view==='skeleton'&&a.el!=='C')||lone?atomTxt(m,a.id):a.el);
+      g.appendChild(el('circle',{cx:a.x,cy:a.y,r:14,fill:'var(--surface)'}));
+      var t2=el('text',{x:a.x,y:a.y+5,'font-size':15,'text-anchor':'middle',
+        fill:a.el==='C'?'var(--text)':COL[a.el],'font-family':'Kanit','font-weight':700});
+      t2.textContent=txt;g.appendChild(t2);
+    }else{
+      g.appendChild(el('circle',{cx:a.x,cy:a.y,r:3.4,fill:'var(--text)'}));
+    }
+    if(inter&&a.id===sel)g.appendChild(el('circle',{cx:a.x,cy:a.y,r:19,fill:'none',stroke:'var(--cyan)','stroke-width':2.4}));
+  });
+  if(!inter)return;
+
+  m.atoms.forEach(function(a){
+    var hit=el('circle',{cx:a.x,cy:a.y,r:22,fill:'transparent',style:'cursor:pointer'});
+    hit.addEventListener('click',function(ev){ev.stopPropagation();opts.onAtom&&opts.onAtom(a.id);});
+    g.appendChild(hit);
+  });
+  /* bond hit areas sit ON TOP of the atom circles, trimmed to the middle */
+  m.bonds.forEach(function(b){
+    var a1=A(m,b.a),a2=A(m,b.b),s=trimSeg(a1.x,a1.y,a2.x,a2.y,19,19);
+    var hit=el('line',{x1:s[0],y1:s[1],x2:s[2],y2:s[3],stroke:'transparent','stroke-width':22,style:'cursor:pointer'});
+    hit.addEventListener('click',function(ev){ev.stopPropagation();opts.onBond&&opts.onBond(b);});
+    g.appendChild(hit);
+  });
+  links.forEach(function(L){
+    var gg=el('g',{style:'cursor:pointer'});
+    gg.appendChild(el('circle',{cx:L.x,cy:L.y,r:14,fill:'oklch(0.75 0.15 145/.18)',stroke:'var(--green)','stroke-width':2,'stroke-dasharray':'4 3'}));
+    gg.appendChild(el('circle',{cx:L.x,cy:L.y,r:6,fill:'none',stroke:'var(--green)','stroke-width':2}));
+    gg.appendChild(el('circle',{cx:L.x,cy:L.y,r:22,fill:'transparent'}));
+    gg.addEventListener('click',function(ev){ev.stopPropagation();opts.onLink&&opts.onLink(L);});
+    g.appendChild(gg);
+  });
+  buds.forEach(function(b){
+    var gg=el('g',{style:'cursor:pointer'});
+    gg.appendChild(el('circle',{cx:b.x,cy:b.y,r:13,fill:'oklch(0.75 0.14 200/.13)',stroke:'var(--cyan)','stroke-width':2,'stroke-dasharray':'4 3'}));
+    var t=el('text',{x:b.x,y:b.y+5.5,'font-size':16,'text-anchor':'middle',fill:'var(--cyan)','font-family':'Kanit'});
+    t.textContent='+';gg.appendChild(t);
+    gg.appendChild(el('circle',{cx:b.x,cy:b.y,r:22,fill:'transparent'}));
+    gg.addEventListener('click',function(ev){ev.stopPropagation();opts.onBud&&opts.onBud(b);});
+    g.appendChild(gg);
+  });
+}
+
+/* ================= content ================= */
+var MODS=[
+ {id:'m1',icon:'📐',name:'อ่านเขียนเส้นและมุม',sub:'แอลเคนและโครงร่างคาร์บอน'},
+ {id:'m2',icon:'🔗',name:'พันธะไม่อิ่มตัว',sub:'แอลคีนและแอลไคน์'},
+ {id:'m3',icon:'⬡',name:'วงแหวนและอะโรมาติก',sub:'ไซโคลแอลเคนและเบนซีน'},
+ {id:'m4',icon:'🧬',name:'หมู่ฟังก์ชัน',sub:'แอลกอฮอล์ อีเทอร์ คาร์บอนิล กรด'},
+ {id:'m5',icon:'🔀',name:'ไอโซเมอร์',sub:'สูตรโมเลกุลเดียวกัน โครงสร้างต่างกัน'}
+];
+function L(o){return o;}
+var LEVELS={
+m1:[
+ L({n:'อีเทน',goal:'formula',formula:'C2H6',brief:'ต่อคาร์บอนให้ครบ 2 อะตอม',
+    hints:['แตะวงกลมประ + รอบอะตอม เพื่อเติมคาร์บอนอีก 1 อะตอม','ไฮโดรเจนเติมให้อัตโนมัติตามเวเลนซ์ที่เหลือ']}),
+ L({n:'โพรเพน',goal:'formula',formula:'C3H8',brief:'คาร์บอน 3 อะตอมต่อกันเป็นสาย',
+    hints:['อะตอมที่มีวงแหวนฟ้าคืออะตอมที่เลือกอยู่ จุด + จะขึ้นรอบอะตอมนั้น']}),
+ L({n:'บิวเทน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1],[1,2],[2,3]]},
+    brief:'สร้างโครงสร้างตามภาพเป้าหมาย',hints:['ต่อคาร์บอนจากอะตอมปลายสายเสมอ อย่าแตกกิ่งกลางสาย']}),
+ L({n:'ทายสูตร: สายตรง 5 คาร์บอน',goal:'identify',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    options:['C₅H₁₂','C₅H₁₀','C₄H₁₀','C₆H₁₄'],answer:'C₅H₁₂',
+    brief:'นับจำนวนมุมและปลายเส้น',hints:['ทุกมุมและทุกปลายเส้นคือคาร์บอน 1 อะตอม','คาร์บอนปลายมี H 3 ตัว คาร์บอนกลางมี H 2 ตัว']}),
+ L({n:'เพนเทน',goal:'structure',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4]]},
+    brief:'สร้างโครงสร้างตามภาพเป้าหมาย',hints:['ต่อให้ครบ 5 คาร์บอนเป็นสายตรง']}),
+ L({n:'2-เมทิลโพรเพน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1],[1,2],[1,3]]},
+    brief:'โครงสร้างแบบกิ่ง สูตรโมเลกุลเท่าบิวเทน',
+    hints:['แตะอะตอมกลางสายก่อน แล้วจึงต่อคาร์บอนออกด้านข้าง','คาร์บอนตัวกลางมีเพื่อนบ้าน 3 ตัว']}),
+ L({n:'ทายสูตร: โครงสร้างมีกิ่ง',goal:'identify',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[1,4]]},
+    options:['C₅H₁₂','C₅H₁₀','C₆H₁₄','C₄H₈'],answer:'C₅H₁₂',
+    brief:'กิ่งไม่ได้เพิ่มสูตรโมเลกุลเสมอไป',hints:['นับคาร์บอนทั้งหมดรวมกิ่งด้วย','สายตรงและแบบกิ่งที่มีคาร์บอนเท่ากันคือไอโซเมอร์กัน']}),
+ L({n:'2-เมทิลบิวเทน',goal:'structure',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[1,4]]},
+    brief:'สร้างโครงสร้างตามภาพเป้าหมาย',hints:['สายหลัก 4 คาร์บอน แล้วแตกกิ่ง 1 กิ่งที่คาร์บอนตัวที่ 2']}),
+ L({n:'2,2-ไดเมทิลโพรเพน',goal:'structure',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    brief:'คาร์บอนกลาง 1 อะตอม ล้อมด้วยคาร์บอนอีก 4',
+    hints:['เลือกอะตอมกลางไว้ตลอด แล้วแตะจุด + ทีละด้านจนครบ 4','คาร์บอนกลางจะไม่มีไฮโดรเจนเหลือเลย']}),
+ L({n:'3-เมทิลเพนเทน',goal:'structure',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4],[2,5]]},
+    brief:'สายหลัก 5 คาร์บอน กิ่งอยู่ตรงกลาง',hints:['นับตำแหน่งกิ่งจากปลายที่ใกล้ที่สุด']})
+],
+m2:[
+ L({n:'อีทีน',goal:'structure',spec:{atoms:['C','C'],bonds:[[0,1,2]]},
+    brief:'คาร์บอน 2 อะตอม เชื่อมด้วยพันธะคู่',
+    hints:['วางคาร์บอนก่อน แล้ว "แตะที่เส้นพันธะ" เพื่อเปลี่ยนเป็นพันธะคู่','แตะเส้นซ้ำจะวน เดี่ยว → คู่ → สาม → เดี่ยว']}),
+ L({n:'โพรพีน',goal:'structure',spec:{atoms:['C','C','C'],bonds:[[0,1,2],[1,2,1]]},
+    brief:'คาร์บอน 3 อะตอม มีพันธะคู่ที่ปลาย',hints:['พันธะคู่อยู่ระหว่างคาร์บอนคู่แรกเท่านั้น']}),
+ L({n:'ทายสูตร: แอลคีน',goal:'identify',spec:{atoms:['C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,1]]},
+    options:['C₄H₈','C₄H₁₀','C₄H₆','C₃H₆'],answer:'C₄H₈',
+    brief:'พันธะคู่ทำให้ไฮโดรเจนลดลง',hints:['แอลคีนสายเปิดมีสูตรทั่วไป CₙH₂ₙ','คาร์บอนที่มีพันธะคู่จะเหลือที่ว่างให้ H น้อยลง 1 ตัว']}),
+ L({n:'บิวท์-1-อีน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,1]]},
+    brief:'พันธะคู่อยู่ที่คาร์บอนตำแหน่งที่ 1',hints:['ต่อสาย 4 คาร์บอนก่อน แล้วค่อยแตะเส้นปลายสุดให้เป็นพันธะคู่']}),
+ L({n:'บิวท์-2-อีน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1,1],[1,2,2],[2,3,1]]},
+    brief:'สูตรโมเลกุลเท่าบิวท์-1-อีน แต่พันธะคู่อยู่กลาง',
+    hints:['นี่คือไอโซเมอร์ตำแหน่ง เปลี่ยนแค่ตำแหน่งพันธะคู่','แตะเส้นพันธะเส้นกลางแทนเส้นปลาย']}),
+ L({n:'อีไทน์',goal:'structure',spec:{atoms:['C','C'],bonds:[[0,1,3]]},
+    brief:'คาร์บอน 2 อะตอมกับพันธะสาม',hints:['แตะเส้นพันธะ 2 ครั้งเพื่อไปถึงพันธะสาม']}),
+ L({n:'โพรไพน์',goal:'structure',spec:{atoms:['C','C','C'],bonds:[[0,1,3],[1,2,1]]},
+    brief:'พันธะสามอยู่ที่ปลายสายคาร์บอน 3 อะตอม',hints:['พันธะสามต้องอยู่ระหว่างคาร์บอนคู่ปลาย ไม่ใช่ตรงกลาง']}),
+ L({n:'ทายสูตร: แอลไคน์',goal:'identify',spec:{atoms:['C','C','C','C'],bonds:[[0,1,3],[1,2,1],[2,3,1]]},
+    options:['C₄H₆','C₄H₈','C₄H₁₀','C₅H₈'],answer:'C₄H₆',
+    brief:'พันธะสามลดไฮโดรเจนมากกว่าพันธะคู่',hints:['แอลไคน์สายเปิดมีสูตรทั่วไป CₙH₂ₙ₋₂']}),
+ L({n:'บิวทา-1,3-ไดอีน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,2]]},
+    brief:'มีพันธะคู่ 2 ตำแหน่ง',hints:['พันธะคู่อยู่ที่เส้นแรกและเส้นสุดท้าย เว้นเส้นกลางเป็นพันธะเดี่ยว']}),
+ L({n:'2-เมทิลโพรพีน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1,2],[1,2,1],[1,3,1]]},
+    brief:'แอลคีนแบบมีกิ่ง',hints:['คาร์บอนตัวที่มีพันธะคู่ยังแตกกิ่งได้อีก 1 กิ่ง']})
+],
+m4:[
+ L({n:'เมทานอล',goal:'structure',spec:{atoms:['C','O'],bonds:[[0,1]]},
+    brief:'คาร์บอน 1 อะตอมกับหมู่ –OH',
+    hints:['กดปุ่มธาตุ O ในถาดก่อน แล้วค่อยแตะจุด +','ออกซิเจนที่ปลายสายจะมี H ติดมาเอง กลายเป็น OH']}),
+ L({n:'เอทานอล',goal:'structure',spec:{atoms:['C','C','O'],bonds:[[0,1],[1,2]]},
+    brief:'แอลกอฮอล์ 2 คาร์บอน',hints:['ต่อ C–C ก่อน แล้วจึงเติม O ที่ปลาย']}),
+ L({n:'ไดเมทิลอีเทอร์',goal:'structure',spec:{atoms:['C','O','C'],bonds:[[0,1],[1,2]]},
+    brief:'สูตรโมเลกุลเท่าเอทานอล แต่ออกซิเจนอยู่ตรงกลาง',
+    hints:['สร้าง C → ต่อ O → แล้วเลือก C ต่อออกจากออกซิเจนอีกด้าน','นี่คือไอโซเมอร์หมู่ฟังก์ชันของเอทานอล']}),
+ L({n:'ทายสูตร: แอลกอฮอล์',goal:'identify',spec:{atoms:['C','C','C','O'],bonds:[[0,1],[1,2],[2,3]]},
+    options:['C₃H₈O','C₃H₆O','C₃H₈','C₄H₁₀O'],answer:'C₃H₈O',
+    brief:'อย่าลืมนับ H ที่ติดกับออกซิเจน',hints:['ออกซิเจนมีเวเลนซ์ 2 ต่อคาร์บอน 1 พันธะแล้วเหลือที่ให้ H อีก 1']}),
+ L({n:'โพรแพน-1-ออล',goal:'structure',spec:{atoms:['C','C','C','O'],bonds:[[0,1],[1,2],[2,3]]},
+    brief:'แอลกอฮอล์ 3 คาร์บอน',hints:['หมู่ –OH อยู่ที่คาร์บอนปลายสาย']}),
+ L({n:'เอทานาล',goal:'structure',spec:{atoms:['C','C','O'],bonds:[[0,1],[1,2,2]]},
+    brief:'แอลดีไฮด์: C=O อยู่ที่ปลายสาย',
+    hints:['วางออกซิเจนที่ปลาย แล้วแตะเส้นพันธะ C–O ให้เป็นพันธะคู่']}),
+ L({n:'โพรพาโนน',goal:'structure',spec:{atoms:['C','C','C','O'],bonds:[[0,1],[1,2],[1,3,2]]},
+    brief:'คีโตน: C=O อยู่กลางสาย',
+    hints:['สร้างสาย C–C–C ก่อน แล้วเติม O ที่คาร์บอนตัวกลาง','แตะเส้น C–O ให้เป็นพันธะคู่']}),
+ L({n:'กรดแอซีติก',goal:'structure',spec:{atoms:['C','C','O','O'],bonds:[[0,1],[1,2,2],[1,3,1]]},
+    brief:'หมู่คาร์บอกซิล –COOH',
+    hints:['ต่อ C–C ก่อน แล้วเติมออกซิเจน 2 ตัวที่คาร์บอนตัวเดียวกัน','แตะเส้นพันธะของออกซิเจนตัวหนึ่งให้เป็นพันธะคู่ อีกตัวคงเป็นเดี่ยว']}),
+ L({n:'ทายสูตร: กรดคาร์บอกซิลิก',goal:'identify',spec:{atoms:['C','C','C','O','O'],bonds:[[0,1],[1,2],[2,3,2],[2,4,1]]},
+    options:['C₃H₆O₂','C₃H₈O₂','C₃H₄O₂','C₂H₄O₂'],answer:'C₃H₆O₂',
+    brief:'มีออกซิเจน 2 อะตอมในหมู่เดียว',hints:['O ที่เป็นพันธะคู่ไม่มี H แต่ O ที่เป็นพันธะเดี่ยวมี H 1 ตัว']}),
+ L({n:'เมทิลามีน',goal:'structure',spec:{atoms:['C','N'],bonds:[[0,1]]},
+    brief:'เอมีน: ไนโตรเจนมีเวเลนซ์ 3',
+    hints:['กดปุ่มธาตุ N ในถาดก่อนวาง','ไนโตรเจนต่อคาร์บอน 1 พันธะ จะเหลือที่ให้ H อีก 2 ตัว']})
+],
+m3:[
+ L({n:'ไซโคลโพรเพน',goal:'structure',spec:{atoms:['C','C','C'],bonds:[[0,1],[1,2],[2,0]]},
+    brief:'วงแหวน 3 เหลี่ยม',
+    hints:['ต่อคาร์บอนเป็นสาย 3 อะตอมก่อน','เลือกอะตอมปลายสาย แล้วแตะสัญลักษณ์วงกลมสีเขียวที่ปรากฏ เพื่อปิดวง']}),
+ L({n:'ไซโคลบิวเทน',goal:'structure',spec:{atoms:['C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,0]]},
+    brief:'วงแหวน 4 เหลี่ยม',hints:['ต่อสาย 4 คาร์บอน แล้วเลือกปลายสายเพื่อปิดวง']}),
+ L({n:'ไซโคลเพนเทน',goal:'structure',spec:{atoms:['C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4],[4,0]]},
+    brief:'วงแหวน 5 เหลี่ยม',hints:['ต่อสาย 5 คาร์บอนให้โค้งไปทางเดียวกัน แล้วปิดวง']}),
+ L({n:'ไซโคลเฮกเซน',goal:'structure',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+    brief:'วงแหวน 6 เหลี่ยม พบมากที่สุดในธรรมชาติ',hints:['ต่อสาย 6 คาร์บอนให้โค้งไปทางเดียวกันจนครบ แล้วปิดวง']}),
+ L({n:'ทายสูตร: ไซโคลแอลเคน',goal:'identify',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+    options:['C₆H₁₂','C₆H₁₄','C₆H₆','C₅H₁₀'],answer:'C₆H₁₂',
+    brief:'คาร์บอนในวงทุกตัวมี H เท่ากัน',hints:['ไซโคลแอลเคนมีสูตรทั่วไป CₙH₂ₙ เท่ากับแอลคีน','คาร์บอนในวงมีพันธะกับเพื่อนบ้าน 2 เส้น เหลือที่ให้ H 2 ตัว']}),
+ L({n:'เมทิลไซโคลเพนเทน',goal:'structure',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1],[1,2],[2,3],[3,4],[4,0],[0,5]]},
+    brief:'วงแหวน 5 เหลี่ยมที่มีกิ่ง 1 กิ่ง',hints:['ปิดวง 5 เหลี่ยมให้เสร็จก่อน แล้วค่อยเติมกิ่งออกด้านนอกวง']}),
+ L({n:'เบนซีน',goal:'structure',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1]]},
+    brief:'วงแหวน 6 เหลี่ยมที่มีพันธะคู่สลับกัน 3 ตำแหน่ง',
+    hints:['ปิดวง 6 เหลี่ยมให้ได้ก่อน แล้วค่อยแตะเส้นพันธะ','แตะให้เป็นพันธะคู่แบบเว้นเส้น สลับกันไปรอบวง จะได้ 3 พันธะคู่พอดี']}),
+ L({n:'ทายสูตร: เบนซีน',goal:'identify',spec:{atoms:['C','C','C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1]]},
+    options:['C₆H₆','C₆H₁₂','C₆H₁₄','C₆H₈'],answer:'C₆H₆',
+    brief:'พันธะคู่ในวงทำให้ไฮโดรเจนลดลงมาก',
+    hints:['คาร์บอนแต่ละตัวใช้เวเลนซ์ไปกับเพื่อนบ้าน 3 (พันธะคู่ 1 + พันธะเดี่ยว 1) เหลือที่ให้ H เพียง 1 ตัว','เบนซีนมี C 6 อะตอม จึงมี H 6 อะตอม']}),
+ L({n:'โทลูอีน (เมทิลเบนซีน)',goal:'structure',
+    spec:{atoms:['C','C','C','C','C','C','C'],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1]]},
+    brief:'เบนซีนที่มีหมู่เมทิลเกาะ 1 หมู่',
+    hints:['สร้างวงเบนซีนให้ครบก่อน แล้วค่อยเติมคาร์บอนออกนอกวง','คาร์บอนในวงที่มีกิ่งเกาะจะไม่เหลือที่ให้ไฮโดรเจนเลย']}),
+ L({n:'ฟีนอล',goal:'structure',
+    spec:{atoms:['C','C','C','C','C','C','O'],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1]]},
+    brief:'เบนซีนที่มีหมู่ –OH เกาะ',
+    hints:['สร้างวงเบนซีนก่อน แล้วเลือกธาตุ O จากถาดก่อนแตะจุด +','หมู่ –OH บนวงเบนซีนทำให้ฟีนอลมีสมบัติเป็นกรดอ่อน']})
+],
+m5:[
+ L({n:'ล่าไอโซเมอร์ C₄H₁₀',goal:'isomers',formula:'C4H10',count:2,
+    brief:'ไอโซเมอร์โครงร่าง: สร้างให้ครบ 2 แบบ',hints:['แบบหนึ่งเป็นสายตรง อีกแบบมีกิ่ง']}),
+ L({n:'ทายสูตร: โครงร่างต่างกัน',goal:'identify',spec:{atoms:['C','C','C','C'],bonds:[[0,1],[1,2],[1,3]]},
+    options:['C₄H₁₀','C₄H₈','C₃H₈','C₅H₁₂'],answer:'C₄H₁₀',
+    brief:'โซ่กิ่งนี้มีสูตรโมเลกุลเท่ากับบิวเทนหรือไม่',
+    hints:['นับคาร์บอนทั้งหมดรวมกิ่งด้วย','โซ่ตรงกับโซ่กิ่งที่คาร์บอนเท่ากันจะมีสูตรโมเลกุลเท่ากันเสมอ']}),
+ L({n:'ล่าไอโซเมอร์ C₅H₁₂',goal:'isomers',formula:'C5H12',count:3,
+    brief:'คราวนี้มี 3 แบบ',hints:['สายตรง 1 แบบ, มีกิ่งเดียว 1 แบบ, และแบบที่คาร์บอนกลางมี 4 กิ่ง']}),
+ L({n:'ล่าไอโซเมอร์ C₃H₆',goal:'isomers',formula:'C3H6',count:2,
+    brief:'ไอโซเมอร์ข้ามประเภท: สายเปิดกับวงแหวน',
+    hints:['แบบหนึ่งมีพันธะคู่ อีกแบบเป็นวงแหวน 3 เหลี่ยม','นี่คือไอโซเมอร์ระหว่างแอลคีนกับไซโคลแอลเคน']}),
+ L({n:'ล่าไอโซเมอร์ C₄H₈',goal:'isomers',formula:'C4H8',count:4,
+    brief:'หาให้ครบ 4 แบบจากทั้งหมด 5 แบบ',
+    hints:['มีทั้งแอลคีนสายตรง แอลคีนมีกิ่ง และวงแหวน','อย่าลืมวงแหวน 4 เหลี่ยม และวงแหวน 3 เหลี่ยมที่มีกิ่ง']}),
+ L({n:'โพรแพน-2-ออล',goal:'structure',spec:{atoms:['C','C','C','O'],bonds:[[0,1],[1,2],[1,3]]},
+    brief:'ไอโซเมอร์ตำแหน่ง: หมู่ –OH ย้ายมาอยู่กลางสาย',
+    hints:['สร้างสาย C–C–C ก่อน แล้วเลือกคาร์บอนตัวกลาง','เลือกธาตุ O จากถาดแล้วแตะจุด + ที่คาร์บอนตัวกลาง']}),
+ L({n:'ทายสูตร: ไอโซเมอร์หมู่ฟังก์ชัน',goal:'identify',spec:{atoms:['C','C','C','O'],bonds:[[0,1],[1,2],[1,3,2]]},
+    options:['C₃H₆O','C₃H₈O','C₃H₆O₂','C₄H₈O'],answer:'C₃H₆O',
+    brief:'คีโตนตัวนี้เป็นไอโซเมอร์กับแอลดีไฮด์ตัวใด',
+    hints:['คาร์บอนที่มีพันธะคู่กับออกซิเจนจะไม่เหลือที่ให้ไฮโดรเจน','โพรพาโนน (คีโตน) เป็นไอโซเมอร์หมู่ฟังก์ชันกับโพรพานาล (แอลดีไฮด์)']}),
+ L({n:'ล่าไอโซเมอร์ C₅H₁₀',goal:'isomers',formula:'C5H10',count:4,
+    brief:'ด่านสุดท้าย: หาให้ครบ 4 แบบ',
+    hints:['มีทั้งแอลคีนหลายตำแหน่ง แอลคีนมีกิ่ง และวงแหวนหลายขนาด','ไซโคลเพนเทนและเมทิลไซโคลบิวเทนก็นับเป็นไอโซเมอร์ด้วย']})
+]};
+Object.keys(LEVELS).forEach(function(mk){
+  LEVELS[mk].forEach(function(L2,i){
+    L2.id=mk+'l'+(i+1);L2.mod=mk;
+    if(L2.spec){L2._mol=molFromSpec(L2.spec);L2._pf=plainFormula(L2._mol);}
+    if(!L2.hints)L2.hints=[];
+  });
+});
+
+var ARTICLES=[
+ {mod:'m1',icon:'📐',title:'อ่านสูตรโครงสร้างแบบเส้นและมุม',
+  body:function(){return ''+
+   '<p>สูตรโครงสร้างแบบเส้นและมุม (skeletal formula) คือวิธีเขียนที่นักเคมีใช้จริงมากที่สุด เพราะเขียนเร็วและอ่านโครงคาร์บอนได้ทันที</p>'+
+   '<h4>กติกา 3 ข้อ</h4>'+
+   '<ul><li><b>ทุกมุมและทุกปลายเส้น</b> คือคาร์บอน 1 อะตอม (ไม่ต้องเขียนตัว C)</li>'+
+   '<li><b>ไฮโดรเจนที่เกาะคาร์บอนไม่ต้องเขียน</b> ให้เข้าใจว่าเติมจนคาร์บอนครบ 4 พันธะเสมอ</li>'+
+   '<li><b>ธาตุอื่นต้องเขียน</b> เช่น O, N พร้อม H ที่เกาะอยู่ เช่น OH</li></ul>'+
+   '<div class="exbox"><svg data-mol="C,C,C,C|0-1,1-2,2-3"></svg><div class="cap">4 จุด = คาร์บอน 4 อะตอม → บิวเทน C₄H₁₀</div></div>'+
+   '<h4>วิธีนับสูตรโมเลกุลจากภาพ</h4>'+
+   '<p>1) นับจุดมุมและปลายเส้นทั้งหมด = จำนวนคาร์บอน<br>'+
+   '2) ดูว่าคาร์บอนแต่ละตัวมีเส้นออกกี่เส้น แล้วเติม H ให้ครบ 4<br>'+
+   '3) คาร์บอนปลายสายมี H 3 ตัว คาร์บอนกลางสายมี H 2 ตัว คาร์บอนที่มี 3 กิ่งมี H 1 ตัว</p>'+
+   '<h4>สูตรทั่วไปที่ควรจำ</h4>'+
+   '<table class="ktable"><tr><td>แอลเคน</td><td>CₙH₂ₙ₊₂ — พันธะเดี่ยวล้วน</td></tr>'+
+   '<tr><td>โซ่ตรง vs โซ่กิ่ง</td><td>คาร์บอนเท่ากัน สูตรโมเลกุลเท่ากัน แต่เป็นคนละสาร = ไอโซเมอร์</td></tr></table>';}},
+ {mod:'m2',icon:'🔗',title:'พันธะคู่และพันธะสาม',
+  body:function(){return ''+
+   '<p>เมื่อคาร์บอนใช้เวเลนซ์อิเล็กตรอนไปกับอะตอมเพื่อนบ้านมากขึ้น ที่ว่างสำหรับไฮโดรเจนก็ลดลง นี่คือเหตุผลว่าทำไมแอลคีนและแอลไคน์จึงมี H น้อยกว่าแอลเคน</p>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1:2,1-2,2-3"></svg><div class="cap"><b>แอลคีน</b><br>บิวท์-1-อีน C₄H₈<br>เส้นคู่ = พันธะคู่</div></div>'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1:3,1-2,2-3"></svg><div class="cap"><b>แอลไคน์</b><br>บิวท์-1-ไอน์ C₄H₆<br>เส้นสาม = พันธะสาม</div></div>'+
+   '</div>'+
+   '<p style="font-size:12px;color:var(--dim)">สังเกตว่าช่วงที่มีพันธะสามจะเขียนเป็น<b>เส้นตรง</b> เพราะคาร์บอนที่สร้างพันธะสามมีมุมพันธะ 180° ส่วนพันธะเดี่ยวและพันธะคู่เขียนเป็น<b>เส้นหักมุม</b> (ประมาณ 120°)</p>'+
+   '<h4>สูตรทั่วไป</h4>'+
+   '<table class="ktable"><tr><td>แอลเคน</td><td>CₙH₂ₙ₊₂ (พันธะเดี่ยว)</td></tr>'+
+   '<tr><td>แอลคีน</td><td>CₙH₂ₙ (มีพันธะคู่ 1 ตำแหน่ง)</td></tr>'+
+   '<tr><td>แอลไคน์</td><td>CₙH₂ₙ₋₂ (มีพันธะสาม 1 ตำแหน่ง)</td></tr></table>'+
+   '<h4>ตำแหน่งพันธะสำคัญมาก</h4>'+
+   '<p>บิวท์-1-อีน กับ บิวท์-2-อีน มีสูตรโมเลกุล C₄H₈ เท่ากัน แต่พันธะคู่อยู่คนละตำแหน่ง จึงเป็น<b>ไอโซเมอร์ตำแหน่ง</b> และมีสมบัติต่างกัน เช่น จุดเดือดไม่เท่ากัน</p>'+
+   '<p>เวลาเรียกชื่อ ให้นับตำแหน่งพันธะคู่จากปลายที่<b>ใกล้พันธะคู่ที่สุด</b> เสมอ</p>';}},
+ {mod:'m3',icon:'⬡',title:'วงแหวนและอะโรมาติก',
+  body:function(){return ''+
+   '<p>เมื่อปลายทั้งสองของสายคาร์บอนเชื่อมกัน จะได้<b>ไซโคลแอลเคน</b> การปิดวงทำให้เสียไฮโดรเจนไป 2 อะตอม เทียบกับแอลเคนสายเปิดที่มีคาร์บอนเท่ากัน</p>'+
+   '<div class="exbox"><svg data-mol="C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-0"></svg><div class="cap"><b>ไซโคลเฮกเซน C₆H₁₂</b><br>วง 6 เหลี่ยม พันธะเดี่ยวล้วน</div></div>'+
+   '<h4>สูตรทั่วไปของไซโคลแอลเคน</h4>'+
+   '<p>ไซโคลแอลเคนมีสูตรทั่วไป <b>CₙH₂ₙ</b> ซึ่งเท่ากับแอลคีนพอดี ทั้งสองจึงเป็นไอโซเมอร์กันได้ เช่น C₃H₆ เป็นได้ทั้งโพรพีนและไซโคลโพรเพน</p>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,C|0-1,1-2,2-0"></svg><div class="cap">ไซโคลโพรเพน<br>C₃H₆</div></div>'+
+     '<div class="exbox"><svg data-mol="C,C,C,C,C|0-1,1-2,2-3,3-4,4-0"></svg><div class="cap">ไซโคลเพนเทน<br>C₅H₁₀</div></div>'+
+   '</div>'+
+   '<h4>เบนซีนและสารอะโรมาติก</h4>'+
+   '<p><b>เบนซีน C₆H₆</b> คือวงแหวน 6 เหลี่ยมที่มีพันธะคู่สลับกับพันธะเดี่ยว 3 ตำแหน่ง คาร์บอนแต่ละตัวใช้เวเลนซ์ไปกับเพื่อนบ้าน 3 จึงเหลือที่ให้ไฮโดรเจนเพียงตัวเดียว</p>'+
+   '<div class="exbox"><svg data-mol="C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0"></svg><div class="cap"><b>เบนซีน C₆H₆</b><br>เขียนแบบเคคูเล — พันธะคู่สลับรอบวง</div></div>'+
+   '<p>ในความเป็นจริงอิเล็กตรอนของพันธะคู่ทั้ง 3 คู่<b>เคลื่อนที่กระจายทั่ววง</b> (delocalized) ไม่ได้อยู่ตำแหน่งใดตำแหน่งหนึ่ง พันธะทุกเส้นในวงจึงยาวเท่ากันหมด บางตำราจึงเขียนเป็นวงกลมอยู่กลางหกเหลี่ยมแทนพันธะคู่สลับ ทั้งสองแบบหมายถึงสารเดียวกัน</p>'+
+   '<p>การกระจายตัวของอิเล็กตรอนนี้ทำให้วงเบนซีน<b>เสถียรเป็นพิเศษ</b> จึงไม่เกิดปฏิกิริยาการเติมง่ายเหมือนแอลคีนทั่วไป ทั้งที่มีพันธะคู่อยู่</p>'+
+   '<h4>อนุพันธ์ของเบนซีนที่พบบ่อย</h4>'+
+   '<div class="fgrow"><svg data-mol="C,C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6"></svg><div class="fgt"><b>โทลูอีน C₇H₈</b>'+
+     '<span>เบนซีนที่มีหมู่เมทิล –CH₃ เกาะ ใช้เป็นตัวทำละลายในอุตสาหกรรม</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,C,C,C,C,O|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6"></svg><div class="fgt"><b>ฟีนอล C₆H₆O</b>'+
+     '<span>เบนซีนที่มีหมู่ –OH เกาะ มีสมบัติเป็นกรดอ่อน ใช้ในน้ำยาฆ่าเชื้อ</span></div></div>'+
+   '<table class="ktable">'+
+   '<tr><td>ไซโคลเฮกเซน</td><td>C₆H₁₂ — พันธะเดี่ยวล้วน ทำปฏิกิริยาการเติมไม่ได้</td></tr>'+
+   '<tr><td>เบนซีน</td><td>C₆H₆ — มีพันธะคู่สลับ แต่เสถียรมากเพราะอิเล็กตรอนกระจายทั่ววง</td></tr></table>';}},
+ {mod:'m4',icon:'🧬',title:'หมู่ฟังก์ชันที่ต้องรู้',
+  body:function(){return ''+
+   '<p>หมู่ฟังก์ชันคือกลุ่มอะตอมที่กำหนดสมบัติทางเคมีของสาร สารที่มีคาร์บอนเท่ากันแต่หมู่ฟังก์ชันต่างกัน จะมีสมบัติต่างกันมาก แบ่งจำง่าย ๆ ตามธาตุที่เข้ามาแทรกในโครงคาร์บอน</p>'+
+   '<h4>กลุ่มที่ 1 · มีออกซิเจนเป็นองค์ประกอบ</h4>'+
+   '<div class="subh">1.1 ออกซิเจนอยู่ปลายสาย</div>'+
+   '<div class="fgrow"><svg data-mol="C,C,O|0-1,1-2"></svg><div class="fgt"><b>แอลกอฮอล์ –OH</b>'+
+     '<span>ออกซิเจนต่อกับไฮโดรเจนที่ปลายสาย เกิดพันธะไฮโดรเจนได้ จุดเดือดสูง<br>ตัวอย่าง: เอทานอล C₂H₆O</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,O|0-1,1-2:2"></svg><div class="fgt"><b>แอลดีไฮด์ –CHO</b>'+
+     '<span>พันธะคู่ C=O อยู่ที่คาร์บอนปลายสาย<br>ตัวอย่าง: เอทานาล C₂H₄O</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,O,O|0-1,1-2:2,1-3"></svg><div class="fgt"><b>กรดคาร์บอกซิลิก –COOH</b>'+
+     '<span>คาร์บอนตัวเดียวมีทั้ง C=O และ –OH แสดงสมบัติเป็นกรด<br>ตัวอย่าง: กรดแอซีติก C₂H₄O₂</span></div></div>'+
+   '<div class="subh">1.2 ออกซิเจนอยู่กลางสาย</div>'+
+   '<div class="fgrow"><svg data-mol="C,O,C|0-1,1-2"></svg><div class="fgt"><b>อีเทอร์ –O–</b>'+
+     '<span>ออกซิเจนคั่นกลางระหว่างคาร์บอนสองฝั่ง ไม่มี H เกาะ จุดเดือดต่ำ<br>ตัวอย่าง: ไดเมทิลอีเทอร์ C₂H₆O</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,C,O|0-1,1-2,1-3:2"></svg><div class="fgt"><b>คีโตน C=O กลางสาย</b>'+
+     '<span>พันธะคู่ C=O อยู่ที่คาร์บอนกลางสาย ไม่ใช่ปลาย<br>ตัวอย่าง: โพรพาโนน (อะซิโตน) C₃H₆O</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,O,O,C|0-1,1-2:2,1-3,3-4"></svg><div class="fgt"><b>เอสเทอร์ –COO–</b>'+
+     '<span>มีทั้ง C=O และ –O– คั่นกลาง มักมีกลิ่นหอมของผลไม้<br>ตัวอย่าง: เมทิลแอซีเทต C₃H₆O₂</span></div></div>'+
+   '<h4>กลุ่มที่ 2 · มีไนโตรเจนเป็นองค์ประกอบ</h4>'+
+   '<div class="fgrow"><svg data-mol="C,C,N|0-1,1-2"></svg><div class="fgt"><b>เอมีน –NH₂</b>'+
+     '<span>ไนโตรเจนเวเลนซ์ 3 ต่อคาร์บอน 1 พันธะ เหลือที่ให้ H อีก 2 ตัว แสดงสมบัติเป็นเบส<br>ตัวอย่าง: เอทิลามีน C₂H₇N</span></div></div>'+
+   '<div class="fgrow"><svg data-mol="C,C,O,N|0-1,1-2:2,1-3"></svg><div class="fgt"><b>เอไมด์ –CONH₂</b>'+
+     '<span>คาร์บอนตัวเดียวมีทั้ง C=O และ N เป็นพันธะที่เชื่อมกรดอะมิโนในโปรตีน<br>ตัวอย่าง: เอทานาไมด์ C₂H₅NO</span></div></div>'+
+   '<h4>ทำไมเอทานอลกับไดเมทิลอีเทอร์ต่างกัน</h4>'+
+   '<p>ทั้งคู่เป็น C₂H₆O เหมือนกัน แต่เอทานอลมี H เกาะกับ O โดยตรง จึงเกิด<b>พันธะไฮโดรเจน</b>ระหว่างโมเลกุลได้ ต้องใช้พลังงานมากกว่าในการแยกโมเลกุลออกจากกัน จุดเดือดจึงสูงถึง 78 °C</p>'+
+   '<p>ส่วนไดเมทิลอีเทอร์มีออกซิเจนอยู่ตรงกลาง ไม่มี H เกาะกับ O จึงเกิดพันธะไฮโดรเจนระหว่างโมเลกุลไม่ได้ จุดเดือดจึงต่ำถึง −24 °C กลายเป็นแก๊สที่อุณหภูมิห้อง</p>';}},
+ {mod:'m5',icon:'🔀',title:'ไอโซเมอร์โครงสร้าง',
+  body:function(){return ''+
+   '<p><b>ไอโซเมอร์</b> คือสารที่มีสูตรโมเลกุลเหมือนกันทุกประการ แต่การจัดเรียงอะตอมต่างกัน จึงเป็นคนละสารและมีสมบัติต่างกัน นี่คือเหตุผลว่าทำไมสูตรโมเลกุลอย่างเดียวจึงบอกไม่ได้ว่าเป็นสารอะไร</p>'+
+   '<h4>ไอโซเมอร์โครงสร้าง 3 ประเภท</h4>'+
+   '<div class="subh">1. ไอโซเมอร์โครงร่าง — ต่างกันที่การเรียงโซ่คาร์บอน</div>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1,1-2,2-3"></svg><div class="cap">บิวเทน<br>โซ่ตรง</div></div>'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1,1-2,1-3"></svg><div class="cap">2-เมทิลโพรเพน<br>โซ่กิ่ง</div></div>'+
+   '</div>'+
+   '<p style="font-size:12px;color:var(--dim);margin-top:-4px">ทั้งคู่เป็น C₄H₁₀ เหมือนกัน</p>'+
+   '<div class="subh">2. ไอโซเมอร์ตำแหน่ง — ต่างกันที่ตำแหน่งพันธะคู่หรือหมู่ฟังก์ชัน</div>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1:2,1-2,2-3"></svg><div class="cap">บิวท์-1-อีน<br>พันธะคู่ที่ปลาย</div></div>'+
+     '<div class="exbox"><svg data-mol="C,C,C,C|0-1,1-2:2,2-3"></svg><div class="cap">บิวท์-2-อีน<br>พันธะคู่ตรงกลาง</div></div>'+
+   '</div>'+
+   '<p style="font-size:12px;color:var(--dim);margin-top:-4px">ทั้งคู่เป็น C₄H₈ เหมือนกัน</p>'+
+   '<div class="subh">3. ไอโซเมอร์หมู่ฟังก์ชัน — ต่างกันที่ชนิดหมู่ฟังก์ชัน</div>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,O|0-1,1-2"></svg><div class="cap">เอทานอล<br>แอลกอฮอล์ –OH</div></div>'+
+     '<div class="exbox"><svg data-mol="C,O,C|0-1,1-2"></svg><div class="cap">ไดเมทิลอีเทอร์<br>อีเทอร์ –O–</div></div>'+
+   '</div>'+
+   '<p style="font-size:12px;color:var(--dim);margin-top:-4px">ทั้งคู่เป็น C₂H₆O เหมือนกัน แต่คนละสารและสมบัติต่างกันมาก</p>'+
+   '<h4>ไอโซเมอร์ข้ามประเภท: สายเปิดกับวงแหวน</h4>'+
+   '<p>ไซโคลแอลเคนมีสูตรทั่วไป CₙH₂ₙ ซึ่งเท่ากับแอลคีนพอดี ทั้งสองจึงเป็นไอโซเมอร์กันได้</p>'+
+   '<div class="expair">'+
+     '<div class="exbox"><svg data-mol="C,C,C|0-1:2,1-2"></svg><div class="cap">โพรพีน<br>แอลคีน</div></div>'+
+     '<div class="exbox"><svg data-mol="C,C,C|0-1,1-2,2-0"></svg><div class="cap">ไซโคลโพรเพน<br>วงแหวน</div></div>'+
+   '</div>'+
+   '<p style="font-size:12px;color:var(--dim);margin-top:-4px">ทั้งคู่เป็น C₃H₆ เหมือนกัน</p>'+
+   '<h4>จำนวนไอโซเมอร์เพิ่มเร็วมาก</h4>'+
+   '<table class="ktable">'+
+   '<tr><td>C₄H₁₀</td><td>2 แบบ</td></tr>'+
+   '<tr><td>C₅H₁₂</td><td>3 แบบ</td></tr>'+
+   '<tr><td>C₆H₁₄</td><td>5 แบบ</td></tr>'+
+   '<tr><td>C₁₀H₂₂</td><td>75 แบบ</td></tr></table>'+
+   '<p>เพราะเหตุนี้ นักเคมีจึงต้องเขียน<b>สูตรโครงสร้าง</b> ไม่ใช่แค่สูตรโมเลกุล เวลาระบุว่ากำลังพูดถึงสารใด</p>';}}
+];
+
+var W='oklch(0.96 0.01 260)',CY='oklch(0.75 0.14 200)',GR='oklch(0.75 0.15 145)',AM='oklch(0.82 0.15 85)',DM='oklch(0.74 0.02 260)';
+function pulse(at,vals,dur){return '<animate attributeName="'+at+'" values="'+vals+'" dur="'+dur+'s" repeatCount="indefinite"/>';}
+var GUIDE=[
+ {t:'แตะอะตอมเพื่อเลือก',
+  d:'อะตอมที่กำลังเลือกอยู่จะมีวงแหวนสีฟ้าล้อมรอบ จุดต่อต่าง ๆ จะปรากฏรอบอะตอมนี้เท่านั้น แตะอะตอมอื่นเพื่อย้ายจุดที่จะต่อ',
+  v:'<polyline points="18,52 46,26 74,52 102,26" fill="none" stroke="'+W+'" stroke-width="3" stroke-linejoin="round"/>'+
+    '<circle cx="46" cy="26" r="3.4" fill="'+W+'"/><circle cx="74" cy="52" r="3.4" fill="'+W+'"/>'+
+    '<circle cx="46" cy="26" r="13" fill="none" stroke="'+CY+'" stroke-width="2.5">'+pulse('r','11;16;11',1.8)+pulse('opacity','1;.3;1',1.8)+'</circle>'},
+ {t:'แตะจุด + เพื่อวางอะตอมใหม่',
+  d:'วงกลมประสีฟ้าที่มีเครื่องหมาย + คือตำแหน่งที่วางอะตอมได้ จำนวนจุดเท่ากับเวเลนซ์ที่ยังเหลือ และมุมถูกกำหนดให้เป็นซิกแซกตามหลักการเขียนสูตรโครงสร้าง',
+  v:'<line x1="30" y1="52" x2="58" y2="30" stroke="'+W+'" stroke-width="3"/>'+
+    '<circle cx="58" cy="30" r="3.4" fill="'+W+'"/>'+
+    '<circle cx="58" cy="30" r="13" fill="none" stroke="'+CY+'" stroke-width="2"/>'+
+    '<g><circle cx="86" cy="52" r="11" fill="none" stroke="'+CY+'" stroke-width="2" stroke-dasharray="4 3"/>'+
+    '<text x="86" y="57" font-size="14" text-anchor="middle" fill="'+CY+'">+</text>'+pulse('opacity','.35;1;.35',1.6)+'</g>'+
+    '<g><circle cx="58" cy="6" r="11" fill="none" stroke="'+CY+'" stroke-width="2" stroke-dasharray="4 3"/>'+
+    '<text x="58" y="11" font-size="14" text-anchor="middle" fill="'+CY+'">+</text>'+pulse('opacity','1;.35;1',1.6)+'</g>'},
+ {t:'แตะเส้นพันธะเพื่อเปลี่ยนชนิด',
+  d:'แตะที่กลางเส้นระหว่างอะตอม จะวนเปลี่ยน พันธะเดี่ยว → พันธะคู่ → พันธะสาม → กลับมาเดี่ยว ถ้าเวเลนซ์ไม่พอระบบจะเตือน',
+  v:'<line x1="24" y1="50" x2="52" y2="28" stroke="'+W+'" stroke-width="3"/>'+
+    '<line x1="52" y1="28" x2="88" y2="28" stroke="'+W+'" stroke-width="3"/>'+
+    '<line x1="52" y1="36" x2="88" y2="36" stroke="'+AM+'" stroke-width="3">'+pulse('opacity','0;0;1;1',2.4)+'</line>'+
+    '<line x1="88" y1="28" x2="112" y2="50" stroke="'+W+'" stroke-width="3"/>'+
+    '<circle cx="70" cy="32" r="12" fill="none" stroke="'+AM+'" stroke-width="2">'+pulse('r','9;15;9',2.4)+pulse('opacity','1;.2;1',2.4)+'</circle>'},
+ {t:'แตะวงกลมสีเขียวเพื่อปิดวง',
+  d:'ต่อคาร์บอนให้โค้งไปทางเดียวกันเรื่อย ๆ พอปลายทั้งสองข้างเข้ามาใกล้กัน จะมีวงกลมสีเขียวขึ้นตรงกลาง แตะเพื่อเชื่อมเป็นวงแหวน แล้วระบบจะจัดรูปให้สวยอัตโนมัติ',
+  v:'<polyline points="40,14 68,14 82,38 68,62 40,62 26,38" fill="none" stroke="'+W+'" stroke-width="3" stroke-linejoin="round"/>'+
+    '<circle cx="33" cy="26" r="12" fill="none" stroke="'+GR+'" stroke-width="2.5" stroke-dasharray="4 3">'+pulse('opacity','.4;1;.4',1.5)+'</circle>'+
+    '<circle cx="33" cy="26" r="5" fill="none" stroke="'+GR+'" stroke-width="2">'+pulse('opacity','.4;1;.4',1.5)+'</circle>'},
+ {t:'เลือกธาตุจากถาดด้านล่าง',
+  d:'C คาร์บอน (เวเลนซ์ 4), O ออกซิเจน (เวเลนซ์ 2), N ไนโตรเจน (เวเลนซ์ 3) กดเลือกธาตุก่อน แล้วค่อยแตะจุด + เพื่อวาง',
+  v:'<rect x="12" y="20" width="30" height="30" rx="9" fill="oklch(0.55 0.01 260)"/><text x="27" y="41" font-size="15" text-anchor="middle" fill="#fff" font-family="Kanit" font-weight="700">C</text>'+
+    '<rect x="48" y="20" width="30" height="30" rx="9" fill="oklch(0.66 0.19 25)"/><text x="63" y="41" font-size="15" text-anchor="middle" fill="#fff" font-family="Kanit" font-weight="700">O</text>'+
+    '<rect x="84" y="20" width="30" height="30" rx="9" fill="oklch(0.62 0.16 260)"/><text x="99" y="41" font-size="15" text-anchor="middle" fill="#fff" font-family="Kanit" font-weight="700">N</text>'+
+    '<rect x="10" y="18" width="34" height="34" rx="11" fill="none" stroke="'+CY+'" stroke-width="2.5">'+pulse('opacity','1;.25;1',1.8)+'</rect>'},
+ {t:'ไฮโดรเจนเติมให้อัตโนมัติ',
+  d:'ไม่ต้องวาง H เอง ระบบเติมให้ครบเวเลนซ์เสมอ และคำนวณสูตรโมเลกุลสดให้ที่มุมซ้ายบนของพื้นที่วาด เมื่อตรงกับเป้าหมายตัวเลขจะเปลี่ยนเป็นสีเขียว',
+  v:'<line x1="34" y1="46" x2="62" y2="24" stroke="'+W+'" stroke-width="3"/><line x1="62" y1="24" x2="90" y2="46" stroke="'+W+'" stroke-width="3"/>'+
+    '<g fill="'+DM+'" font-size="11" font-family="Kanit">'+
+    '<g>'+pulse('opacity','0;1;1;0',3)+'<circle cx="30" cy="20" r="8" fill="oklch(0.95 0 0)"/><text x="30" y="24" text-anchor="middle" fill="#222">H</text></g>'+
+    '<g>'+pulse('opacity','0;1;1;0',3)+'<circle cx="62" cy="8" r="8" fill="oklch(0.95 0 0)"/><text x="62" y="12" text-anchor="middle" fill="#222">H</text></g>'+
+    '<g>'+pulse('opacity','0;1;1;0',3)+'<circle cx="94" cy="20" r="8" fill="oklch(0.95 0 0)"/><text x="94" y="24" text-anchor="middle" fill="#222">H</text></g></g>'+
+    '<text x="62" y="62" font-size="12" text-anchor="middle" fill="'+GR+'" font-family="Kanit" font-weight="600">C₃H₈</text>'},
+ {t:'สลับมุมมองได้ 3 แบบ',
+  d:'เส้นและมุม / แบบเต็ม (เห็น H ทุกตัว) / แบบย่อ — ทั้งสามเป็นโครงสร้างเดียวกัน แค่เขียนคนละวิธี ลองสลับดูเพื่อเชื่อมโยงทั้งสามรูปแบบเข้าด้วยกัน',
+  v:'<polyline points="10,44 26,28 42,44" fill="none" stroke="'+W+'" stroke-width="2.5"/>'+
+    '<text x="26" y="60" font-size="8" text-anchor="middle" fill="'+DM+'">เส้นและมุม</text>'+
+    '<circle cx="56" cy="44" r="7" fill="none" stroke="'+W+'" stroke-width="2"/><circle cx="72" cy="30" r="7" fill="none" stroke="'+W+'" stroke-width="2"/>'+
+    '<line x1="61" y1="39" x2="67" y2="35" stroke="'+W+'" stroke-width="2"/>'+
+    '<text x="64" y="60" font-size="8" text-anchor="middle" fill="'+DM+'">แบบเต็ม</text>'+
+    '<text x="102" y="40" font-size="11" text-anchor="middle" fill="'+AM+'" font-family="Kanit">CH₃CH₃</text>'+
+    '<text x="102" y="60" font-size="8" text-anchor="middle" fill="'+DM+'">แบบย่อ</text>'},
+ {t:'ลบอะตอมได้ ยกเว้นจะทำให้ขาด',
+  d:'ปุ่ม "ลบอะตอม" ลบอะตอมที่เลือกอยู่ ลบอะตอมในวงแหวนได้ (วงจะเปิดออกเป็นสาย) แต่ลบอะตอมกลางสายไม่ได้เพราะโครงสร้างจะขาดเป็นสองส่วน ถ้าต้องการรื้อทั้งหมดให้กด "เริ่มใหม่"',
+  v:'<polyline points="20,50 48,28 76,50" fill="none" stroke="'+W+'" stroke-width="3"/>'+
+    '<line x1="76" y1="50" x2="104" y2="28" stroke="'+DM+'" stroke-width="3" stroke-dasharray="5 4"/>'+
+    '<circle cx="104" cy="28" r="12" fill="none" stroke="oklch(0.66 0.19 25)" stroke-width="2.5">'+pulse('opacity','1;.3;1',1.6)+'</circle>'+
+    '<line x1="99" y1="23" x2="109" y2="33" stroke="oklch(0.66 0.19 25)" stroke-width="2.5"/>'+
+    '<line x1="109" y1="23" x2="99" y2="33" stroke="oklch(0.66 0.19 25)" stroke-width="2.5"/>'},
+ {t:'ผิดได้ไม่จำกัด ไม่ตัดคะแนน',
+  d:'ทุกด่านคือการฝึกและสาธิต ลองผิดลองถูกได้เต็มที่ ไม่มีการจับเวลาและไม่หักคะแนน ถ้าติดให้กดปุ่มหลอดไฟเพื่อขอคำใบ้ (ใช้คำใบ้จะได้ดาวน้อยลง แต่ยังผ่านด่านได้ตามปกติ)',
+  v:'<path d="M40 34a22 22 0 1 1 8 17" fill="none" stroke="'+CY+'" stroke-width="3" stroke-linecap="round">'+
+    '<animateTransform attributeName="transform" type="rotate" from="0 40 34" to="360 40 34" dur="3s" repeatCount="indefinite"/></path>'+
+    '<polygon points="44,52 54,50 48,60" fill="'+CY+'"/>'+
+    '<circle cx="92" cy="30" r="13" fill="'+AM+'">'+pulse('opacity','.55;1;.55',1.8)+'</circle>'+
+    '<text x="92" y="36" font-size="15" text-anchor="middle" fill="oklch(0.16 0.03 260)">💡</text>'}
+];
+
+/* ================= question bank ================= */
+function parseSpec(str){
+  var p=str.split('|');
+  return {atoms:p[0].split(','),
+    bonds:(p[1]||'').split(',').filter(Boolean).map(function(b){
+      var s=b.split(':'),ij=s[0].split('-');
+      return [+ij[0],+ij[1],s[1]?+s[1]:1];})};
+}
+function Bk(s,n,k,d){return {s:s,n:n,k:k,d:d};}   /* spec, ชื่อ, ประเภท/หมู่ฟังก์ชัน, ความยาก */
+var BANK={
+m1:[
+ Bk('C,C|0-1','อีเทน','แอลเคน',1),
+ Bk('C,C,C|0-1,1-2','โพรเพน','แอลเคน',1),
+ Bk('C,C,C,C|0-1,1-2,2-3','บิวเทน','แอลเคน',1),
+ Bk('C,C,C,C,C|0-1,1-2,2-3,3-4','เพนเทน','แอลเคน',1),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5','เฮกเซน','แอลเคน',2),
+ Bk('C,C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-6','เฮปเทน','แอลเคน',2),
+ Bk('C,C,C,C|0-1,1-2,1-3','2-เมทิลโพรเพน','แอลเคน',2),
+ Bk('C,C,C,C,C|0-1,1-2,2-3,1-4','2-เมทิลบิวเทน','แอลเคน',2),
+ Bk('C,C,C,C,C|0-1,0-2,0-3,0-4','2,2-ไดเมทิลโพรเพน','แอลเคน',3),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,3-4,2-5','3-เมทิลเพนเทน','แอลเคน',2),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,1-4,2-5','2,3-ไดเมทิลบิวเทน','แอลเคน',3),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,3-4,1-5','2-เมทิลเพนเทน','แอลเคน',2)
+],
+m2:[
+ Bk('C,C|0-1:2','อีทีน','แอลคีน',1),
+ Bk('C,C,C|0-1:2,1-2','โพรพีน','แอลคีน',1),
+ Bk('C,C,C,C|0-1:2,1-2,2-3','บิวท์-1-อีน','แอลคีน',2),
+ Bk('C,C,C,C|0-1,1-2:2,2-3','บิวท์-2-อีน','แอลคีน',2),
+ Bk('C,C,C,C|0-1:2,1-2,1-3','2-เมทิลโพรพีน','แอลคีน',3),
+ Bk('C,C,C,C,C|0-1:2,1-2,2-3,3-4','เพนท์-1-อีน','แอลคีน',2),
+ Bk('C,C,C,C,C|0-1,1-2:2,2-3,3-4','เพนท์-2-อีน','แอลคีน',2),
+ Bk('C,C|0-1:3','อีไทน์','แอลไคน์',1),
+ Bk('C,C,C|0-1:3,1-2','โพรไพน์','แอลไคน์',2),
+ Bk('C,C,C,C|0-1:3,1-2,2-3','บิวท์-1-ไอน์','แอลไคน์',2),
+ Bk('C,C,C,C|0-1,1-2:3,2-3','บิวท์-2-ไอน์','แอลไคน์',3),
+ Bk('C,C,C,C|0-1:2,1-2,2-3:2','บิวทา-1,3-ไดอีน','แอลคีน',3)
+],
+m3:[
+ Bk('C,C,C|0-1,1-2,2-0','ไซโคลโพรเพน','ไซโคลแอลเคน',1),
+ Bk('C,C,C,C|0-1,1-2,2-3,3-0','ไซโคลบิวเทน','ไซโคลแอลเคน',1),
+ Bk('C,C,C,C,C|0-1,1-2,2-3,3-4,4-0','ไซโคลเพนเทน','ไซโคลแอลเคน',2),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-0','ไซโคลเฮกเซน','ไซโคลแอลเคน',2),
+ Bk('C,C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-6,6-0','ไซโคลเฮปเทน','ไซโคลแอลเคน',2),
+ Bk('C,C,C,C|0-1,1-2,2-0,0-3','เมทิลไซโคลโพรเพน','ไซโคลแอลเคน',3),
+ Bk('C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-0,0-5','เมทิลไซโคลเพนเทน','ไซโคลแอลเคน',3),
+ Bk('C,C,C,C,C|0-1,1-2,2-3,3-0,0-4','เมทิลไซโคลบิวเทน','ไซโคลแอลเคน',3),
+ Bk('C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0','เบนซีน','อะโรมาติก',2),
+ Bk('C,C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6','โทลูอีน','อะโรมาติก',3),
+ Bk('C,C,C,C,C,C,O|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6','ฟีนอล','อะโรมาติก',3),
+ Bk('C,C,C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6,6-7','เอทิลเบนซีน','อะโรมาติก',3)
+],
+m4:[
+ Bk('C,O|0-1','เมทานอล','แอลกอฮอล์ –OH',1),
+ Bk('C,C,O|0-1,1-2','เอทานอล','แอลกอฮอล์ –OH',1),
+ Bk('C,C,C,O|0-1,1-2,2-3','โพรแพน-1-ออล','แอลกอฮอล์ –OH',2),
+ Bk('C,C,C,O|0-1,1-2,1-3','โพรแพน-2-ออล','แอลกอฮอล์ –OH',3),
+ Bk('C,O,C|0-1,1-2','ไดเมทิลอีเทอร์','อีเทอร์ –O–',2),
+ Bk('C,C,O,C|0-1,1-2,2-3','เอทิลเมทิลอีเทอร์','อีเทอร์ –O–',3),
+ Bk('C,C,O|0-1,1-2:2','เอทานาล','แอลดีไฮด์ –CHO',2),
+ Bk('C,C,C,O|0-1,1-2,2-3:2','โพรพานาล','แอลดีไฮด์ –CHO',2),
+ Bk('C,C,C,O|0-1,1-2,1-3:2','โพรพาโนน','คีโตน C=O กลางสาย',2),
+ Bk('C,C,C,C,O|0-1,1-2,2-3,1-4:2','บิวทาโนน','คีโตน C=O กลางสาย',3),
+ Bk('C,C,O,O|0-1,1-2:2,1-3','กรดแอซีติก','กรดคาร์บอกซิลิก –COOH',2),
+ Bk('C,C,C,O,O|0-1,1-2,2-3:2,2-4','กรดโพรพาโนอิก','กรดคาร์บอกซิลิก –COOH',3),
+ Bk('C,N|0-1','เมทิลามีน','เอมีน –NH₂',1),
+ Bk('C,C,N|0-1,1-2','เอทิลามีน','เอมีน –NH₂',2),
+ Bk('C,C,O,N|0-1,1-2:2,1-3','เอทานาไมด์','เอไมด์ –CONH₂',3),
+ Bk('C,C,O,O,C|0-1,1-2:2,1-3,3-4','เมทิลแอซีเทต','เอสเทอร์ –COO–',3)
+]};
+/* isomer pairs for module 5 */
+function Pr(a,an,b,bn,type,d){return {a:a,an:an,b:b,bn:bn,t:type,d:d};}
+var PAIRS=[
+ Pr('C,C,C,C|0-1,1-2,2-3','บิวเทน','C,C,C,C|0-1,1-2,1-3','2-เมทิลโพรเพน','ไอโซเมอร์โครงร่าง',1),
+ Pr('C,C,C,C,C|0-1,1-2,2-3,3-4','เพนเทน','C,C,C,C,C|0-1,1-2,2-3,1-4','2-เมทิลบิวเทน','ไอโซเมอร์โครงร่าง',2),
+ Pr('C,C,C,C,C|0-1,1-2,2-3,3-4','เพนเทน','C,C,C,C,C|0-1,0-2,0-3,0-4','2,2-ไดเมทิลโพรเพน','ไอโซเมอร์โครงร่าง',2),
+ Pr('C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5','เฮกเซน','C,C,C,C,C,C|0-1,1-2,2-3,3-4,1-5','2-เมทิลเพนเทน','ไอโซเมอร์โครงร่าง',2),
+ Pr('C,C,C,C|0-1:2,1-2,2-3','บิวท์-1-อีน','C,C,C,C|0-1,1-2:2,2-3','บิวท์-2-อีน','ไอโซเมอร์ตำแหน่ง',2),
+ Pr('C,C,C,O|0-1,1-2,2-3','โพรแพน-1-ออล','C,C,C,O|0-1,1-2,1-3','โพรแพน-2-ออล','ไอโซเมอร์ตำแหน่ง',3),
+ Pr('C,C,O|0-1,1-2','เอทานอล','C,O,C|0-1,1-2','ไดเมทิลอีเทอร์','ไอโซเมอร์หมู่ฟังก์ชัน',2),
+ Pr('C,C,C,O|0-1,1-2,2-3:2','โพรพานาล','C,C,C,O|0-1,1-2,1-3:2','โพรพาโนน','ไอโซเมอร์หมู่ฟังก์ชัน',3),
+ Pr('C,C,C|0-1:2,1-2','โพรพีน','C,C,C|0-1,1-2,2-0','ไซโคลโพรเพน','ไอโซเมอร์วงกับโซ่เปิด',2),
+ Pr('C,C,C,C|0-1:2,1-2,2-3','บิวท์-1-อีน','C,C,C,C|0-1,1-2,2-3,3-0','ไซโคลบิวเทน','ไอโซเมอร์วงกับโซ่เปิด',3),
+ Pr('C,C,O,O|0-1,1-2:2,1-3','กรดแอซีติก','C,O,O,C|0-1:2,0-2,2-3','เมทิลฟอร์เมต','ไอโซเมอร์หมู่ฟังก์ชัน',3)
+];
+/* pairs that are NOT isomers — used so "ใช่/ไม่ใช่" questions have both answers */
+var NONPAIRS=[
+ Pr('C,C,C,C|0-1,1-2,2-3','บิวเทน','C,C,C,C,C|0-1,1-2,2-3,3-4','เพนเทน','สูตรโมเลกุลต่างกัน',1),
+ Pr('C,C,O|0-1,1-2','เอทานอล','C,C,C,O|0-1,1-2,2-3','โพรแพน-1-ออล','สูตรโมเลกุลต่างกัน',2),
+ Pr('C,C,C|0-1:2,1-2','โพรพีน','C,C,C|0-1,1-2','โพรเพน','สูตรโมเลกุลต่างกัน',1),
+ Pr('C,C,C,C,C,C|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0','เบนซีน','C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-0','ไซโคลเฮกเซน','สูตรโมเลกุลต่างกัน',2)
+];
+
+function classOf(m){
+  var ring=findRing(m);
+  if(ring){
+    var rs={};ring.forEach(function(i){rs[i]=true;});
+    var d=m.bonds.filter(function(b){return b.order===2&&rs[b.a]&&rs[b.b];}).length;
+    if(ring.length===6&&d===3)return 'อะโรมาติก';
+    return 'ไซโคลแอลเคน';
+  }
+  if(m.bonds.some(function(b){return b.order===3;}))return 'แอลไคน์';
+  if(m.bonds.some(function(b){return b.order===2;}))return 'แอลคีน';
+  return 'แอลเคน';
+}
+function shuffle(a,rnd){
+  a=a.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor((rnd?rnd():Math.random())*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function formulaAlts(m){
+  var c=counts(m),out=[];
+  [[0,2],[0,-2],[1,2],[-1,-2],[1,0],[0,4],[-1,0]].forEach(function(p){
+    var cc={};for(var k in c)cc[k]=c[k];
+    cc.C=(cc.C||0)+p[0];cc.H=(cc.H||0)+p[1];
+    if(cc.C<1||cc.H<1)return;
+    var s=fkeys(cc).filter(function(k){return cc[k];}).map(function(k){return k+(cc[k]>1?sub(cc[k]):'');}).join('');
+    if(s!==prettyFormula(m)&&out.indexOf(s)<0)out.push(s);
+  });
+  return out;
+}
+function mcQ(o){o.type='mc';return o;}
+function bdQ(o){o.type='build';return o;}
+/* every module's pool is generated from the bank above */
+function buildPool(mk){
+  var out=[];
+  if(mk==='m5'){
+    PAIRS.concat(NONPAIRS).forEach(function(p,i){
+      var ma=molFromSpec(parseSpec(p.a)),mb=molFromSpec(parseSpec(p.b));
+      var iso=p.t.indexOf('ไอโซเมอร์')===0;
+      out.push(mcQ({id:'m5-'+i+'-yn',mod:'m5',d:p.d,tag:'ไอโซเมอร์',
+        prompt:'โครงสร้าง A และ B ต่อไปนี้เป็นไอโซเมอร์กันหรือไม่',
+        mols:[ma,mb],
+        options:['เป็นไอโซเมอร์กัน เพราะสูตรโมเลกุลเหมือนกันแต่โครงสร้างต่างกัน',
+                 'ไม่เป็น เพราะสูตรโมเลกุลต่างกัน',
+                 'ไม่เป็น เพราะเป็นสารเดียวกัน',
+                 'เป็นไอโซเมอร์กัน เพราะมีจำนวนคาร์บอนเท่ากัน'],
+        answer:iso?0:1}));
+      if(iso)out.push(mcQ({id:'m5-'+i+'-type',mod:'m5',d:p.d+1>3?3:p.d+1,tag:'ประเภทไอโซเมอร์',
+        prompt:'โครงสร้าง A ('+p.an+') และ B ('+p.bn+') เป็นไอโซเมอร์ประเภทใด',
+        mols:[ma,mb],
+        options:shuffle(['ไอโซเมอร์โครงร่าง','ไอโซเมอร์ตำแหน่ง','ไอโซเมอร์หมู่ฟังก์ชัน','ไอโซเมอร์วงกับโซ่เปิด']),
+        answerText:p.t}));
+      out.push(bdQ({id:'m5-'+i+'-bd',mod:'m5',d:p.d,tag:'สร้างไอโซเมอร์',
+        prompt:'จงสร้างโครงสร้างของ '+p.bn+' (สูตรโมเลกุล '+prettyFormula(mb)+')',
+        target:mb}));
+    });
+    return out;
+  }
+  (BANK[mk]||[]).forEach(function(b,i){
+    var m=molFromSpec(parseSpec(b.s));
+    var pf=prettyFormula(m),alts=formulaAlts(m);
+    out.push(mcQ({id:mk+'-'+i+'-f',mod:mk,d:b.d,tag:'สูตรโมเลกุล',
+      prompt:'โครงสร้างนี้มีสูตรโมเลกุลใด',mol:m,
+      options:shuffle([pf,alts[0],alts[1],alts[2]]),answerText:pf}));
+    out.push(mcQ({id:mk+'-'+i+'-h',mod:mk,d:b.d,tag:'นับไฮโดรเจน',
+      prompt:'โครงสร้างนี้มีไฮโดรเจนทั้งหมดกี่อะตอม',mol:m,
+      options:shuffle([String(counts(m).H||0),String((counts(m).H||0)+2),
+                       String(Math.max(0,(counts(m).H||0)-2)),String((counts(m).H||0)+1)]),
+      answerText:String(counts(m).H||0)}));
+    if(mk==='m4'){
+      var fgs=['แอลกอฮอล์ –OH','อีเทอร์ –O–','แอลดีไฮด์ –CHO','คีโตน C=O กลางสาย',
+               'กรดคาร์บอกซิลิก –COOH','เอมีน –NH₂','เอไมด์ –CONH₂','เอสเทอร์ –COO–'];
+      var wrong=shuffle(fgs.filter(function(f){return f!==b.k;})).slice(0,3);
+      out.push(mcQ({id:mk+'-'+i+'-g',mod:mk,d:b.d,tag:'หมู่ฟังก์ชัน',
+        prompt:'โครงสร้างนี้มีหมู่ฟังก์ชันใด',mol:m,
+        options:shuffle([b.k].concat(wrong)),answerText:b.k}));
+    }else{
+      var cls=classOf(m),all=['แอลเคน','แอลคีน','แอลไคน์','ไซโคลแอลเคน','อะโรมาติก'];
+      var w2=shuffle(all.filter(function(c){return c!==cls;})).slice(0,3);
+      out.push(mcQ({id:mk+'-'+i+'-c',mod:mk,d:b.d,tag:'ประเภทของสาร',
+        prompt:'โครงสร้างนี้จัดเป็นสารประเภทใด',mol:m,
+        options:shuffle([cls].concat(w2)),answerText:cls}));
+    }
+    out.push(bdQ({id:mk+'-'+i+'-bd',mod:mk,d:b.d,tag:'ต่อโครงสร้าง',
+      prompt:'จงสร้างโครงสร้างของ '+b.n+' (สูตรโมเลกุล '+pf+')',target:m}));
+  });
+  return out;
+}
+/* HOTs items that belong to the final exam only */
+function BX(o){return o;}
+function examPool(){
+  var P=function(s){return molFromSpec(parseSpec(s));};
+  return [
+   mcQ(BX({id:'x-m1-a',mod:'m1',d:3,tag:'วิเคราะห์',exam:true,
+     prompt:'แอลเคน 3 ชนิดนี้มีคาร์บอนเท่ากันทั้งหมด ข้อใดมีจุดเดือดต่ำที่สุด และเพราะเหตุใด',
+     options:['2,2-ไดเมทิลโพรเพน เพราะมีกิ่งมากที่สุด ผิวสัมผัสระหว่างโมเลกุลน้อยที่สุด',
+              'เพนเทน เพราะสายยาวที่สุด',
+              '2-เมทิลบิวเทน เพราะมีกิ่งพอดี',
+              'ทั้งสามมีจุดเดือดเท่ากัน เพราะสูตรโมเลกุลเหมือนกัน'],answer:0})),
+   bdQ(BX({id:'x-m1-b',mod:'m1',d:3,tag:'สร้างสรรค์',exam:true,
+     prompt:'จงสร้างไอโซเมอร์ของเพนเทน (C₅H₁₂) ที่มีคาร์บอนในสายหลักเพียง 4 อะตอม',
+     target:P('C,C,C,C,C|0-1,1-2,2-3,1-4')})),
+   mcQ(BX({id:'x-m1-c',mod:'m1',d:2,tag:'วิเคราะห์',exam:true,
+     prompt:'ในสูตรโครงสร้างแบบเส้นและมุม เหตุใดจึงไม่ต้องเขียนตัว C และ H ที่เกาะคาร์บอน',
+     options:['เพราะตกลงกันว่าทุกมุมและปลายเส้นคือคาร์บอน และเติม H ให้ครบเวเลนซ์ 4 เสมอ',
+              'เพราะคาร์บอนและไฮโดรเจนไม่สำคัญต่อโครงสร้าง',
+              'เพราะจำนวน H ไม่แน่นอน จึงเขียนไม่ได้',
+              'เพราะเป็นการเขียนแบบย่อที่ใช้เฉพาะแอลเคน'],answer:0})),
+   mcQ(BX({id:'x-m2-a',mod:'m2',d:3,tag:'ประเมิน',exam:true,
+     prompt:'ข้อใดมีสูตรโมเลกุล C₄H₈',
+     optMols:['C,C,C,C|0-1:2,1-2,2-3','C,C,C,C|0-1,1-2,2-3','C,C,C,C|0-1:3,1-2,2-3','C,C,C,C|0-1:2,1-2,2-3:2'],
+     optLabels:['บิวท์-1-อีน','บิวเทน','บิวท์-1-ไอน์','บิวทา-1,3-ไดอีน'],answer:0})),
+   bdQ(BX({id:'x-m2-b',mod:'m2',d:3,tag:'สร้างสรรค์',exam:true,
+     prompt:'จงสร้างแอลไคน์ที่มีคาร์บอน 4 อะตอม โดยให้พันธะสามอยู่กลางสาย',
+     target:P('C,C,C,C|0-1,1-2:3,2-3')})),
+   mcQ(BX({id:'x-m2-c',mod:'m2',d:3,tag:'วิเคราะห์',exam:true,
+     prompt:'เหตุใดแอลคีนกับไซโคลแอลเคนที่มีคาร์บอนเท่ากันจึงเป็นไอโซเมอร์กันได้',
+     options:['เพราะทั้งคู่มีสูตรทั่วไป CₙH₂ₙ เหมือนกัน',
+              'เพราะทั้งคู่มีพันธะคู่เหมือนกัน',
+              'เพราะทั้งคู่เป็นวงแหวน',
+              'เพราะทั้งคู่ละลายน้ำได้ดี'],answer:0})),
+   mcQ(BX({id:'x-m3-a',mod:'m3',d:3,tag:'ประเมิน',exam:true,
+     prompt:'เบนซีนมีพันธะคู่ 3 ตำแหน่ง แต่ไม่เกิดปฏิกิริยาการเติมง่ายเหมือนแอลคีน เพราะเหตุใด',
+     options:['เพราะอิเล็กตรอนของพันธะคู่กระจายทั่ววง ทำให้วงเสถียรเป็นพิเศษ',
+              'เพราะพันธะคู่ในเบนซีนสั้นกว่าปกติมาก จึงเข้าทำปฏิกิริยาไม่ได้',
+              'เพราะเบนซีนไม่มีพันธะคู่จริง มีแต่พันธะเดี่ยว',
+              'เพราะเบนซีนเป็นของเหลวที่อุณหภูมิห้อง'],answer:0})),
+   bdQ(BX({id:'x-m3-b',mod:'m3',d:3,tag:'สร้างสรรค์',exam:true,
+     prompt:'จงสร้างไซโคลแอลเคนที่เป็นไอโซเมอร์กับเพนท์-1-อีน (C₅H₁₀)',
+     target:P('C,C,C,C,C|0-1,1-2,2-3,3-4,4-0')})),
+   mcQ(BX({id:'x-m3-c',mod:'m3',d:2,tag:'วิเคราะห์',exam:true,
+     prompt:'ข้อใดเป็นอนุพันธ์ของเบนซีน',
+     optMols:['C,C,C,C,C,C,O|0-1:2,1-2,2-3:2,3-4,4-5:2,5-0,0-6',
+              'C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5,5-0',
+              'C,C,C,C,C|0-1,1-2,2-3,3-4,4-0',
+              'C,C,C,C,C,C|0-1,1-2,2-3,3-4,4-5'],
+     optLabels:['ฟีนอล','ไซโคลเฮกเซน','ไซโคลเพนเทน','เฮกเซน'],answer:0})),
+   mcQ(BX({id:'x-m4-a',mod:'m4',d:3,tag:'ประเมิน',exam:true,
+     prompt:'เอทานอลมีจุดเดือด 78 °C ส่วนไดเมทิลอีเทอร์มีจุดเดือด −24 °C ทั้งที่เป็น C₂H₆O เหมือนกัน เพราะเหตุใด',
+     options:['เอทานอลมี H เกาะกับ O จึงเกิดพันธะไฮโดรเจนระหว่างโมเลกุลได้ ต้องใช้พลังงานแยกมากกว่า',
+              'เอทานอลมีมวลโมเลกุลมากกว่าไดเมทิลอีเทอร์',
+              'ไดเมทิลอีเทอร์มีพันธะคู่ จึงเดือดง่ายกว่า',
+              'เอทานอลมีคาร์บอนมากกว่า จึงเดือดยากกว่า'],answer:0})),
+   bdQ(BX({id:'x-m4-b',mod:'m4',d:3,tag:'สร้างสรรค์',exam:true,
+     prompt:'จงสร้างสารที่มีสูตร C₃H₆O ซึ่งมีหมู่คาร์บอนิล (C=O) อยู่กลางสาย',
+     target:P('C,C,C,O|0-1,1-2,1-3:2')})),
+   mcQ(BX({id:'x-m4-c',mod:'m4',d:3,tag:'วิเคราะห์',exam:true,
+     prompt:'โครงสร้างนี้มีหมู่ฟังก์ชันใด และมีธาตุใดเป็นองค์ประกอบนอกจาก C กับ H',
+     mol:P('C,C,O,N|0-1,1-2:2,1-3'),
+     options:['เอไมด์ — มีทั้งออกซิเจนและไนโตรเจน','เอสเทอร์ — มีออกซิเจน 2 อะตอม',
+              'เอมีน — มีไนโตรเจนอย่างเดียว','กรดคาร์บอกซิลิก — มีออกซิเจน 2 อะตอม'],answer:0})),
+   mcQ(BX({id:'x-m5-a',mod:'m5',d:3,tag:'ประเมิน',exam:true,
+     prompt:'ข้อใด "ไม่ใช่" ไอโซเมอร์ของ C₅H₁₂',
+     optMols:['C,C,C,C,C|0-1,1-2,2-3,3-4,4-0','C,C,C,C,C|0-1,1-2,2-3,3-4',
+              'C,C,C,C,C|0-1,1-2,2-3,1-4','C,C,C,C,C|0-1,0-2,0-3,0-4'],
+     optLabels:['ไซโคลเพนเทน','เพนเทน','2-เมทิลบิวเทน','2,2-ไดเมทิลโพรเพน'],answer:0})),
+   bdQ(BX({id:'x-m5-b',mod:'m5',d:3,tag:'สร้างสรรค์',exam:true,
+     prompt:'จงสร้างไอโซเมอร์หมู่ฟังก์ชันของโพรพานาล (C₃H₆O) ซึ่งจัดเป็นคีโตน',
+     target:P('C,C,C,O|0-1,1-2,1-3:2')})),
+   mcQ(BX({id:'x-m5-c',mod:'m5',d:3,tag:'วิเคราะห์',exam:true,
+     prompt:'โครงสร้าง A และ B นี้ต่างกันอย่างไร',
+     mols:[P('C,C,C,O|0-1,1-2,2-3'),P('C,C,C,O|0-1,1-2,1-3')],
+     options:['เป็นไอโซเมอร์ตำแหน่ง เพราะหมู่ –OH อยู่คนละตำแหน่งบนสายคาร์บอน',
+              'เป็นไอโซเมอร์หมู่ฟังก์ชัน เพราะหมู่ฟังก์ชันคนละชนิด',
+              'เป็นสารเดียวกัน เขียนคนละแบบ',
+              'ไม่เป็นไอโซเมอร์ เพราะสูตรโมเลกุลต่างกัน'],answer:0}))
+  ];
+}
+
+/* ================= state ================= */
+var AVATARS=['🧑‍🔬','🧪','🦉','🐙','🚀'];
+var S={name:'',cls:'',av:0,prog:{},journal:[],started:Date.now()};
+function load(){try{var r=localStorage.getItem('molequest2');if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}}
+function save(){try{localStorage.setItem('molequest2',JSON.stringify(S));}catch(e){}}
+function allLevels(){var o=[];MODS.forEach(function(M){o=o.concat(LEVELS[M.id]);});return o;}
+function modStars(mk){var t=0;LEVELS[mk].forEach(function(L2){var p=S.prog[L2.id];if(p)t+=p.stars;});return t;}
+/* real progress (what the learner actually cleared) vs unlock state
+   — the teacher/preview bypass writes placeholder entries that gate, but don't count */
+function modDone(mk){return LEVELS[mk].filter(function(L2){var p=S.prog[L2.id];return p&&!p.preview;}).length;}
+function modReached(mk){return LEVELS[mk].filter(function(L2){return S.prog[L2.id];}).length;}
+function modComplete(mk){return modReached(mk)>=LEVELS[mk].length;}
+function totalStars(){return MODS.reduce(function(s,M){return s+modStars(M.id);},0);}
+function maxStars(){return allLevels().length*3;}
+function modUnlocked(i){return i===0||modComplete(MODS[i-1].id);}
+
+var $=function(s){return document.querySelector(s);};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s));};
+function show(id){$$('.screen').forEach(function(s){s.hidden=s.id!==id;});}
+var toastT;
+function toast(msg){
+  var t=$('#toast');
+  if(!t){t=document.createElement('div');t.id='toast';$('#app').appendChild(t);}
+  t.textContent=msg;t.hidden=false;
+  clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true;},2400);
+}
+function buzz(ms){try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}}
+/* inline example molecules inside articles: data-mol="C,C,O|0-1,1-2:2" */
+function renderInlineMols(root){
+  root.querySelectorAll('svg[data-mol]').forEach(function(sv){
+    var parts=sv.getAttribute('data-mol').split('|');
+    var atoms=parts[0].split(',');
+    var bonds=(parts[1]||'').split(',').filter(Boolean).map(function(b){
+      var seg=b.split(':'),ij=seg[0].split('-');
+      return [+ij[0],+ij[1],seg[1]?+seg[1]:1];
+    });
+    try{drawMol(sv,molFromSpec({atoms:atoms,bonds:bonds}),{view:'skeleton',pad:22,minSize:190});}catch(e){}
+  });
+}
+
+/* ================= home ================= */
+function openHome(){
+  var has=!!S.name;
+  $('#h-setup').hidden=has;
+  $('#h-main').hidden=!has;
+  if(has){
+    $('#h-hello').textContent='สวัสดี '+(AVATARS[S.av]||'')+' '+S.name;
+    var done=allLevels().filter(function(L2){var p=S.prog[L2.id];return p&&!p.preview;}).length;
+    var pct=Math.round(done/allLevels().length*100);
+    $('#h-fill').style.width=pct+'%';
+    $('#h-ptxt').textContent='ผ่านแล้ว '+done+' / '+allLevels().length+' ด่าน · ★ '+totalStars()+' ดวง';
+  }
+  show('s-home');
+}
+function initHome(){
+  var row=$('#avrow');
+  AVATARS.forEach(function(a,i){
+    var b=document.createElement('button');
+    b.className='av'+(i===S.av?' on':'');b.textContent=a;
+    b.addEventListener('click',function(){S.av=i;$$('#avrow .av').forEach(function(x,j){x.classList.toggle('on',j===i);});});
+    row.appendChild(b);
+  });
+  $('#i-name').value=S.name||'';$('#i-class').value=S.cls||'';
+  $('#b-save').addEventListener('click',function(){
+    var n=$('#i-name').value.trim();
+    if(!n){toast('กรุณาใส่ชื่อผู้เล่นก่อน');return;}
+    S.name=n;S.cls=$('#i-class').value.trim()||'-';if(!S.started)S.started=Date.now();
+    save();openHome();
+  });
+  $('#b-play').addEventListener('click',openMods);
+  $('#b-guide').addEventListener('click',openGuide);
+  $('#b-know').addEventListener('click',openKnow);
+  $('#b-sum').addEventListener('click',openSummary);
+}
+
+/* ================= modules ================= */
+function openMods(){
+  $('#mo-who').textContent=(S.cls&&S.cls!=='-')?('ห้อง '+S.cls):'ผู้เล่น';
+  $('#mo-stars').textContent='★ '+totalStars()+'/'+maxStars();
+  var list=$('#mo-list');list.innerHTML='';
+  MODS.forEach(function(M,i){
+    var unl=modUnlocked(i),done=modDone(M.id),tot=LEVELS[M.id].length;
+    var b=document.createElement('button');
+    b.className='modcard'+(modComplete(M.id)?' done':'');b.disabled=!unl;
+    b.innerHTML='<div class="mi"></div><div class="mb"><div class="kk"></div><h4></h4>'+
+      '<div class="mbar"><i></i></div><div class="ms"></div></div>';
+    b.querySelector('.mi').textContent=unl?M.icon:'🔒';
+    b.querySelector('.kk').textContent='บทที่ '+(i+1);
+    b.querySelector('h4').textContent=M.name;
+    b.querySelector('.mbar i').style.width=(done/tot*100)+'%';
+    b.querySelector('.ms').textContent=unl
+      ?(done+'/'+tot+' ด่าน · ★ '+modStars(M.id)+'/'+(tot*3))
+      :('ผ่านบทที่ '+i+' ให้ครบก่อน');
+    if(unl)b.addEventListener('click',function(){openLevels(i);});
+    list.appendChild(b);
+  });
+  /* final exam — opens once every module is finished */
+  var allDone=MODS.every(function(M){return modComplete(M.id);});
+  var eb=document.createElement('button');
+  eb.className='modcard boss';eb.disabled=!allDone;
+  eb.innerHTML='<div class="mi"></div><div class="mb"><div class="kk">ข้อสอบรวม</div><h4>จำลองสอบใหญ่ (HOTs)</h4><div class="ms"></div></div>';
+  eb.querySelector('.mi').textContent=allDone?'🎓':'🔒';
+  eb.querySelector('.ms').textContent=allDone
+    ?(S.exam?('15 ข้อ · ครั้งก่อนได้ '+S.exam.score+'/'+S.exam.total):'15 ข้อ ครอบคลุมทั้ง 5 บท เน้นวิเคราะห์และประยุกต์')
+    :'เรียนให้ครบทั้ง 5 บทก่อน';
+  if(allDone)eb.addEventListener('click',function(){startTest('exam',null);});
+  list.appendChild(eb);
+
+  var note=document.createElement('div');
+  note.style.cssText='font-size:11px;color:var(--dim);text-align:center;margin:14px 0 6px;line-height:1.6';
+  note.textContent='ทุกด่านเป็นการฝึกและสาธิต ผิดได้ไม่จำกัด ไม่มีการตัดคะแนน';
+  list.appendChild(note);
+  if(!MODS.every(function(M){return modComplete(M.id);})){
+    var un=document.createElement('button');
+    un.className='btn btn-o';un.style.marginTop='6px';un.textContent='ปลดล็อกทุกบท (โหมดทดลอง/คุณครู)';
+    un.addEventListener('click',function(){
+      allLevels().forEach(function(L2){if(!S.prog[L2.id])S.prog[L2.id]={stars:0,preview:true};});
+      save();openMods();toast('ปลดล็อกทุกบทแล้ว');
+    });
+    list.appendChild(un);
+  }
+  show('s-mods');
+}
+
+/* ================= level list ================= */
+var curMod=0;
+function openLevels(mi){
+  curMod=mi;
+  var M=MODS[mi],ls=LEVELS[M.id];
+  $('#lv-k').textContent='บทที่ '+(mi+1)+' · '+M.sub;
+  $('#lv-title').textContent=M.name;
+  $('#lv-stars').textContent='★ '+modStars(M.id)+'/'+(ls.length*3);
+  var list=$('#lv-list');list.innerHTML='';
+  ls.forEach(function(L2,i){
+    var done=S.prog[L2.id];
+    var unl=i===0||!!S.prog[ls[i-1].id];
+    var b=document.createElement('button');
+    b.className='lvl';b.disabled=!unl;
+    var tag=L2.goal==='identify'?'<span class="tagk ident">ทายสูตร</span>'
+          :L2.goal==='isomers'?'<span class="tagk iso">ล่าไอโซเมอร์</span>'
+          :'<span class="tagk build">ต่อโครงสร้าง</span>';
+    b.innerHTML='<div class="n">'+(i+1)+'</div><div class="b"><h4></h4><p>'+tag+'<span class="bt"></span></p></div><div class="st"></div>';
+    b.querySelector('h4').textContent=L2.n;
+    b.querySelector('.bt').textContent=unl?L2.brief:'ผ่านด่านก่อนหน้าเพื่อปลดล็อก';
+    b.querySelector('.st').textContent=done?'★'.repeat(done.stars)+'☆'.repeat(3-done.stars):(unl?'':'🔒');
+    if(unl)b.addEventListener('click',function(){startLevel(mi,i);});
+    list.appendChild(b);
+  });
+  if(modComplete(M.id)){
+    var q=S.quiz&&S.quiz[M.id];
+    var qb=document.createElement('button');
+    qb.className='btn btn-v';qb.style.marginTop='10px';
+    qb.textContent=q?('ทำแบบทดสอบย่อยอีกครั้ง (ดีที่สุด '+q.score+'/'+q.total+')'):'📝 ทำแบบทดสอบย่อย 10 ข้อ';
+    qb.addEventListener('click',function(){startTest('quiz',M.id);});
+    list.appendChild(qb);
+    var qn=document.createElement('div');
+    qn.style.cssText='font-size:10.5px;color:var(--dim);text-align:center;margin:8px 0 2px;line-height:1.6';
+    qn.textContent='สุ่มจากคลังโจทย์ของบทนี้ · เลือกตอบ 6 ข้อ + ต่อโครงสร้าง 4 ข้อ · ออกกลางคันคำตอบจะหายทั้งหมด';
+    list.appendChild(qn);
+    var k=document.createElement('button');
+    k.className='btn btn-o';k.style.marginTop='8px';k.textContent='💡 อ่านสรุปความรู้ของบทนี้';
+    k.addEventListener('click',function(){artFrom='s-lv';openArticle(mi);});
+    list.appendChild(k);
+  }
+  show('s-lv');
+}
+
+/* ================= play ================= */
+var P={mi:0,li:0,L:null,mol:null,sel:1,elem:'C',view:'skeleton',hints:0,found:[],t0:0,answered:false};
+function startLevel(mi,li){
+  var M=MODS[mi],L2=LEVELS[M.id][li];
+  P.mi=mi;P.li=li;P.L=L2;P.mol=mkMol();P.sel=1;P.elem='C';P.view='skeleton';
+  P.hints=0;P.found=[];P.t0=Date.now();P.answered=false;
+  $('#p-world').textContent='บทที่ '+(mi+1)+' · ด่าน '+(li+1);
+  $('#p-name').textContent=L2.n;
+  $('#p-hintn').textContent=L2.hints.length;
+  $('#p-hint').style.visibility=L2.hints.length?'visible':'hidden';
+  $$('.seg button').forEach(function(b){b.classList.toggle('on',b.dataset.v==='skeleton');});
+  $$('.el').forEach(function(b){b.classList.toggle('on',b.dataset.el==='C');});
+
+  var ident=L2.goal==='identify';
+  $('#p-buildui').hidden=ident;
+  $('#p-choices').hidden=!ident;
+  $('#p-livebox').hidden=ident;
+  $('#p-livebox').classList.remove('ok');
+  $('#p-fab').hidden=!L2.hints.length;
+  $('#p-found').hidden=L2.goal!=='isomers';
+
+  /* goal panel */
+  var gk=$('#p-gk'),gf=$('#p-target'),gn=$('#p-gname'),gt=$('#p-gt');
+  if(ident){
+    gk.textContent='คำถาม';gf.textContent='สูตรโมเลกุลใด?';gf.style.fontSize='19px';
+    gn.textContent='อ่านโครงสร้างด้านล่างแล้วเลือกคำตอบ';gt.hidden=true;
+  }else if(L2.goal==='isomers'){
+    gk.textContent='เป้าหมาย · ล่าไอโซเมอร์';gf.textContent=prettyOf(L2.formula);gf.style.fontSize='25px';
+    gn.textContent='หาโครงสร้างที่ต่างกันให้ครบ '+L2.count+' แบบ';gt.hidden=true;
+  }else if(L2.goal==='formula'){
+    gk.textContent='เป้าหมาย · สร้างสารที่มีสูตรโมเลกุล';gf.textContent=prettyOf(L2.formula);gf.style.fontSize='25px';
+    gn.textContent=L2.brief;gt.hidden=true;
+  }else{
+    gk.textContent='เป้าหมาย · สร้างตามโครงสร้างนี้';gf.textContent=prettyFormula(L2._mol);gf.style.fontSize='25px';
+    gn.textContent=L2.n;gt.hidden=false;
+    drawMol($('#p-gtsvg'),L2._mol,{view:'skeleton',pad:16,minSize:150});
+  }
+  if(L2.goal==='isomers'){
+    var f=$('#p-found');f.innerHTML='';
+    for(var k=0;k<L2.count;k++){
+      var d=document.createElement('div');d.className='fslot';d.innerHTML='<svg></svg>';f.appendChild(d);
+    }
+  }
+  show('s-play');
+  if(ident)renderIdentify();
+  else refresh(L2.brief);
+}
+function renderIdentify(){
+  var L2=P.L;
+  drawMol($('#svg'),L2._mol,{view:'skeleton',pad:26,minSize:250});
+  $('#condensed').hidden=true;
+  var box=$('#p-choices');box.innerHTML='';
+  L2.options.forEach(function(op){
+    var b=document.createElement('button');
+    b.className='choice';b.textContent=op;
+    b.addEventListener('click',function(){
+      if(P.answered)return;
+      if(op===L2.answer){
+        b.classList.add('right');P.answered=true;buzz(15);
+        setTimeout(win,320);
+      }else{
+        b.classList.add('wrong');buzz(8);
+        $('#p-msg').textContent='ยังไม่ใช่ ลองนับจำนวนคาร์บอนและไฮโดรเจนอีกครั้ง';
+        $('#p-msg').className='msg warn';
+      }
+    });
+    box.appendChild(b);
+  });
+  $('#p-msg').textContent=L2.brief;$('#p-msg').className='msg';
+}
+function refresh(msg,cls){
+  var L2=P.L;
+  if(L2.goal==='identify')return;
+  var svg=$('#svg');
+  $('#condensed').hidden=P.view!=='condensed';
+  svg.style.visibility=P.view==='condensed'?'hidden':'visible';
+  if(P.view==='condensed')$('#p-cond').textContent=condensedStr(P.mol);
+  drawMol(svg,P.mol,{view:P.view,interactive:true,sel:P.sel,
+    onAtom:function(id){P.sel=id;refresh();},
+    onBond:function(b){
+      var cur=b.order,ok=false;
+      for(var k=1;k<=3&&!ok;k++){
+        var nxt=(cur+k-1)%3+1,d=nxt-cur;
+        if(freeVal(P.mol,b.a)>=d&&freeVal(P.mol,b.b)>=d){b.order=nxt;ok=true;}
+      }
+      if(!ok){toast('เวเลนซ์ไม่พอสำหรับพันธะที่สูงขึ้น');}
+      else{
+        buzz(8);
+        /* sp geometry changed — redraw straight for a triple bond, bent otherwise */
+        if(b.order===3||cur===3)relayout(P.mol);
+      }
+      onChange();
+    },
+    onBud:function(bd){
+      var id=P.mol.next++;
+      P.mol.atoms.push({id:id,el:P.elem,x:bd.x,y:bd.y});
+      P.mol.bonds.push({a:P.sel,b:id,order:1});
+      P.sel=id;buzz(8);onChange();
+    },
+    onLink:function(L3){
+      P.mol.bonds.push({a:P.sel,b:L3.id,order:1});
+      relayout(P.mol);buzz([10,50,10]);
+      onChange();
+    }});
+  $('#p-live').textContent=prettyFormula(P.mol);
+  var tgt=L2.goal==='structure'?L2._pf:L2.formula;
+  $('#p-livebox').classList.toggle('ok',plainFormula(P.mol)===tgt);
+  if(msg!==undefined&&msg!==null){
+    var m=$('#p-msg');m.textContent=msg;m.className='msg'+(cls?' '+cls:'');
+  }
+}
+function onChange(){
+  var L2=P.L;
+  if(L2.goal==='isomers'){
+    refresh();
+    if(plainFormula(P.mol)===L2.formula){
+      var dup=P.found.some(function(f){return sameMolecule(f,P.mol);});
+      if(!dup){
+        var snap=JSON.parse(JSON.stringify(P.mol));
+        P.found.push(snap);
+        var slot=$('#p-found').children[P.found.length-1];
+        if(slot){slot.classList.add('on');drawMol(slot.querySelector('svg'),snap,{view:'skeleton',pad:18,minSize:160});}
+        S.journal.push({name:prettyOf(L2.formula)+' #'+P.found.length,mol:JSON.stringify(snap)});
+        buzz([12,60,12]);
+        if(P.found.length>=L2.count){win();return;}
+        toast('พบไอโซเมอร์ใหม่! เหลืออีก '+(L2.count-P.found.length)+' แบบ');
+        P.mol=mkMol();P.sel=1;
+        refresh('สร้างโครงสร้างแบบต่อไปที่ต่างจากเดิม','good');
+        return;
+      }
+      refresh('โครงสร้างนี้ซ้ำกับที่พบแล้ว ลองจัดเรียงแบบใหม่','warn');
+      return;
+    }
+    refresh(L2.brief);
+    return;
+  }
+  refresh();
+  var pf=plainFormula(P.mol);
+  if(L2.goal==='formula'){
+    if(pf===L2.formula){win();return;}
+    refresh(L2.brief);
+    return;
+  }
+  if(sameMolecule(P.mol,L2._mol)){win();return;}
+  if(pf===L2._pf)refresh('สูตรโมเลกุลถูกแล้ว แต่การจัดเรียงยังไม่ตรงกับภาพเป้าหมาย','warn');
+  else refresh(L2.brief);
+}
+function win(){
+  var L2=P.L,stars=Math.max(1,3-P.hints),prev=S.prog[L2.id];
+  if(!prev||prev.preview||prev.stars<stars)
+    S.prog[L2.id]={stars:stars,sec:Math.round((Date.now()-P.t0)/1000),hints:P.hints};
+  if(L2.goal==='structure')S.journal.push({name:L2.n,mol:JSON.stringify(P.mol)});
+  var seen={};S.journal=S.journal.filter(function(j){if(seen[j.name])return false;seen[j.name]=true;return true;});
+  if(S.journal.length>36)S.journal=S.journal.slice(-36);
+  save();buzz([15,70,15]);
+  var justDone=modComplete(MODS[P.mi].id);
+  var o=document.createElement('div');o.id='ovl';
+  o.innerHTML='<div class="owin"><div class="big">🎉</div><h2></h2><div class="stars"></div><svg></svg><p></p>'+
+    '<button class="btn btn-p" id="o-next">ถัดไป</button>'+
+    '<button class="btn btn-o" id="o-map" style="margin-top:8px">กลับรายการด่าน</button></div>';
+  o.querySelector('h2').textContent='สำเร็จ! '+L2.n;
+  o.querySelector('.stars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+  var shown=L2.goal==='identify'?L2._mol:(L2.goal==='isomers'?(P.found[0]||P.mol):P.mol);
+  drawMol(o.querySelector('svg'),shown,{view:'skeleton',pad:20,minSize:180});
+  var cap=L2.goal==='isomers'?('พบครบ '+L2.count+' ไอโซเมอร์ของ '+prettyOf(L2.formula))
+        :L2.goal==='identify'?('คำตอบคือ '+L2.answer)
+        :('สูตรโครงสร้างแบบย่อ: '+condensedStr(P.mol));
+  o.querySelector('p').textContent=cap;
+  $('#app').appendChild(o);
+  var ls=LEVELS[MODS[P.mi].id];
+  o.querySelector('#o-next').addEventListener('click',function(){
+    o.remove();
+    if(P.li+1<ls.length)startLevel(P.mi,P.li+1);
+    else{
+      openLevels(P.mi);
+      if(justDone)toast('จบบทนี้แล้ว! ปลดล็อกสรุปความรู้ในคลังความรู้');
+    }
+  });
+  o.querySelector('#o-map').addEventListener('click',function(){o.remove();openLevels(P.mi);});
+}
+function initPlay(){
+  $('#p-back').addEventListener('click',function(){openLevels(P.mi);});
+  $$('.el').forEach(function(b){
+    b.addEventListener('click',function(){
+      P.elem=b.dataset.el;
+      $$('.el').forEach(function(x){x.classList.toggle('on',x===b);});
+      refresh('เลือกธาตุ '+P.elem+' แล้ว — แตะจุด + เพื่อวาง');
+    });
+  });
+  $$('.seg button').forEach(function(b){
+    b.addEventListener('click',function(){
+      P.view=b.dataset.v;
+      $$('.seg button').forEach(function(x){x.classList.toggle('on',x===b);});
+      refresh();
+    });
+  });
+  $('#p-del').addEventListener('click',function(){
+    if(P.mol.atoms.length<=1){toast('เหลืออะตอมเดียวแล้ว กด "เริ่มใหม่" เพื่อรื้อทั้งหมด');return;}
+    if(!canDelete(P.mol,P.sel)){
+      toast('ลบอะตอมนี้ไม่ได้ เพราะโครงสร้างจะขาดออกเป็นสองส่วน — กด "เริ่มใหม่" ถ้าต้องการรื้อทั้งหมด');
+      return;
+    }
+    var wasRing=!!findRing(P.mol);
+    var bs=BO(P.mol,P.sel),parent=bs.length?oth(bs[0],P.sel):null;
+    P.mol.bonds=P.mol.bonds.filter(function(b){return b.a!==P.sel&&b.b!==P.sel;});
+    P.mol.atoms=P.mol.atoms.filter(function(a){return a.id!==P.sel;});
+    P.sel=parent!=null?parent:P.mol.atoms[0].id;
+    if(wasRing)relayout(P.mol);          /* an opened ring must be redrawn as a chain */
+    onChange();
+  });
+  $('#p-clear').addEventListener('click',function(){P.mol=mkMol();P.sel=1;onChange();});
+  $('#p-fab').addEventListener('click',function(){
+    var L2=P.L;
+    if(P.hints>=L2.hints.length){toast('ใช้คำใบ้ครบแล้ว');return;}
+    var h=L2.hints[P.hints];P.hints++;
+    $('#p-hintn').textContent=(L2.hints.length-P.hints);
+    var m=$('#p-msg');m.textContent='💡 '+h;m.className='msg warn';
+  });
+}
+
+/* ================= guide ================= */
+function openGuide(){
+  var b=$('#g-body');b.innerHTML='';
+  var intro=document.createElement('p');
+  intro.style.cssText='font-size:13px;color:var(--dim);line-height:1.75;margin:4px 0 20px';
+  intro.textContent='MoleQuest ให้คุณเรียนสูตรโครงสร้างด้วยการลงมือต่อโมเลกุลจริง ไม่ใช่การท่องจำ ทุกด่านคือการฝึกและสาธิต ผิดกี่ครั้งก็ได้';
+  b.appendChild(intro);
+  GUIDE.forEach(function(g,i){
+    var d=document.createElement('div');d.className='gcard';
+    d.innerHTML='<div class="gvis"><svg viewBox="0 0 124 68" preserveAspectRatio="xMidYMid meet">'+(g.v||'')+'</svg></div>'+
+      '<div class="gstep"><div class="gi">'+(i+1)+'</div><div class="gb"><h4></h4><p></p></div></div>';
+    d.querySelector('h4').textContent=g.t;
+    d.querySelector('p').textContent=g.d;
+    b.appendChild(d);
+  });
+  show('s-guide');
+}
+
+/* ================= knowledge ================= */
+function openKnow(){
+  var list=$('#k-list');list.innerHTML='';
+  ARTICLES.forEach(function(art,i){
+    var unl=modComplete(art.mod);
+    var b=document.createElement('button');
+    b.className='modcard'+(unl?'':' locked');b.disabled=!unl;
+    b.innerHTML='<div class="mi"></div><div class="mb"><div class="kk"></div><h4></h4><div class="ms"></div></div>';
+    b.querySelector('.mi').textContent=unl?art.icon:'🔒';
+    b.querySelector('.kk').textContent='บทที่ '+(i+1);
+    b.querySelector('h4').textContent=art.title;
+    b.querySelector('.ms').textContent=unl?'อ่านได้แล้ว':'ผ่านบทที่ '+(i+1)+' ให้ครบทั้ง '+LEVELS[art.mod].length+' ด่านก่อน';
+    if(unl)b.addEventListener('click',function(){artFrom='s-know';openArticle(i);});
+    list.appendChild(b);
+  });
+  show('s-know');
+}
+var artFrom='s-know';
+function openArticle(i){
+  var art=ARTICLES[i];
+  if(!modComplete(art.mod)){toast('ยังไม่ปลดล็อกบทนี้');return;}
+  $('#a-title').textContent=art.title;
+  var b=$('#a-body');b.innerHTML=art.body();
+  renderInlineMols(b);
+  b.scrollTop=0;
+  show('s-art');
+}
+
+/* ================= summary ================= */
+function openSummary(){
+  $('#u-name').textContent='สรุปผลของ '+(S.name||'ผู้เล่น');
+  $('#u-class').textContent=(S.cls&&S.cls!=='-')?('ห้อง '+S.cls):'—';
+  var all=allLevels();
+  var done=all.filter(function(L2){return S.prog[L2.id]&&!S.prog[L2.id].preview;});
+  var noHint=done.filter(function(L2){return S.prog[L2.id].hints===0;}).length;
+  var mins=Math.max(1,Math.round((Date.now()-(S.started||Date.now()))/60000));
+  var st=$('#u-stats');st.innerHTML='';
+  [['★ '+totalStars()+'/'+maxStars(),'ดาวรวมทั้งหมด',''],
+   [done.length+'/'+all.length,'ด่านที่ผ่าน',''],
+   [(done.length?Math.round(noHint/done.length*100):0)+'%','ผ่านโดยไม่ใช้คำใบ้',''],
+   [MODS.filter(function(M){return modDone(M.id)>=LEVELS[M.id].length;}).length+'/'+MODS.length,'บทที่เรียนจบ','']
+  ].forEach(function(r){
+    var d=document.createElement('div');d.className='stat';
+    d.innerHTML='<div class="v '+r[2]+'"></div><div class="l"></div>';
+    d.querySelector('.v').textContent=r[0];d.querySelector('.l').textContent=r[1];
+    st.appendChild(d);
+  });
+  var tb=$('#u-tests');tb.innerHTML='';
+  MODS.forEach(function(M,i){
+    var q=S.quiz&&S.quiz[M.id];
+    var d=document.createElement('div');d.className='mrow';
+    d.innerHTML='<div class="mi"></div><div class="mb"><h4></h4><div class="bar"><i></i></div></div><div class="sv"></div>';
+    d.querySelector('.mi').textContent='📝';
+    d.querySelector('h4').textContent='ทดสอบย่อย บทที่ '+(i+1)+(q&&q.tries>1?(' · ทำ '+q.tries+' ครั้ง'):'');
+    d.querySelector('.bar i').style.width=(q?q.score/q.total*100:0)+'%';
+    d.querySelector('.sv').textContent=q?(q.score+'/'+q.total):'—';
+    tb.appendChild(d);
+  });
+  var ed=document.createElement('div');ed.className='mrow';
+  ed.style.borderColor='var(--violet)';
+  ed.innerHTML='<div class="mi">🎓</div><div class="mb"><h4>สอบใหญ่ (HOTs)</h4><div class="bar"><i></i></div></div><div class="sv"></div>';
+  ed.querySelector('.bar i').style.width=(S.exam?S.exam.score/S.exam.total*100:0)+'%';
+  ed.querySelector('.bar i').style.background='var(--violet)';
+  ed.querySelector('.sv').textContent=S.exam?(S.exam.score+'/'+S.exam.total):'ยังไม่ได้สอบ';
+  tb.appendChild(ed);
+
+  var mb=$('#u-mods');mb.innerHTML='';
+  MODS.forEach(function(M,i){
+    var tot=LEVELS[M.id].length,dn=modDone(M.id);
+    var d=document.createElement('div');d.className='mrow';
+    d.innerHTML='<div class="mi"></div><div class="mb"><h4></h4><div class="bar"><i></i></div></div><div class="sv"></div>';
+    d.querySelector('.mi').textContent=M.icon;
+    d.querySelector('h4').textContent='บทที่ '+(i+1)+' · '+M.name;
+    d.querySelector('.bar i').style.width=(dn/tot*100)+'%';
+    d.querySelector('.sv').textContent='★ '+modStars(M.id)+'/'+(tot*3);
+    mb.appendChild(d);
+  });
+  var jg=$('#u-journal');jg.innerHTML='';
+  if(!S.journal.length)jg.innerHTML='<div class="jcell" style="grid-column:1/-1"><div class="nm">ยังไม่มีโมเลกุลที่สะสม</div></div>';
+  S.journal.slice(-9).forEach(function(j){
+    var d=document.createElement('div');d.className='jcell';d.innerHTML='<svg></svg><div class="nm"></div>';
+    d.querySelector('.nm').textContent=j.name;
+    try{drawMol(d.querySelector('svg'),JSON.parse(j.mol),{view:'skeleton',pad:16,minSize:130});}catch(e){}
+    jg.appendChild(d);
+  });
+  show('s-sum');
+}
+/* ================= tests ================= */
+function normalizeQ(q){
+  var c={};for(var k in q)c[k]=q[k];
+  if(c.optMols){
+    var idx=shuffle(c.optMols.map(function(_,i){return i;}));
+    var om=idx.map(function(i){return c.optMols[i];});
+    var ol=idx.map(function(i){return c.optLabels?c.optLabels[i]:'';});
+    c.answer=idx.indexOf(c.answer);c.optMols=om;c.optLabels=ol;
+  }else if(c.answerText!=null&&c.options){
+    c.answer=c.options.indexOf(c.answerText);
+  }
+  return c;
+}
+function stratPick(items,want){
+  var by={1:[],2:[],3:[]},out=[];
+  shuffle(items).forEach(function(q){by[q.d||2].push(q);});
+  [1,2,3].forEach(function(d){for(var i=0;i<want[d]&&by[d].length;i++)out.push(by[d].pop());});
+  var rest=shuffle([].concat(by[1],by[2],by[3])),need=want[1]+want[2]+want[3];
+  while(out.length<need&&rest.length)out.push(rest.pop());
+  return out;
+}
+function pickQuiz(mk){
+  var pool=buildPool(mk).map(normalizeQ);
+  var mc=pool.filter(function(q){return q.type==='mc';});
+  var bd=pool.filter(function(q){return q.type==='build';});
+  var picked=stratPick(mc,{1:2,2:2,3:2}).concat(stratPick(bd,{1:1,2:2,3:1}));
+  picked.sort(function(a,b){return (a.d||2)-(b.d||2);});
+  return picked.slice(0,10);
+}
+function pickExam(){
+  var ex=examPool().map(normalizeQ),out=[];
+  MODS.forEach(function(M){
+    var own=shuffle(ex.filter(function(q){return q.mod===M.id;})).slice(0,2);
+    /* at most one of a topic's three items may be reused from that module's quiz pool (33% < 40%) */
+    var reuse=stratPick(buildPool(M.id).map(normalizeQ).filter(function(q){return (q.d||2)>=2;}),{1:0,2:1,3:0}).slice(0,1);
+    out=out.concat(own,reuse);
+  });
+  return out;
+}
+var T=null,exitArm=0;
+function startTest(kind,mk){
+  var items=kind==='exam'?pickExam():pickQuiz(mk);
+  T={kind:kind,mod:mk,items:items,idx:0,
+     ans:items.map(function(){return -1;}),
+     mols:items.map(function(){return mkMol();}),
+     sels:items.map(function(){return 1;}),
+     elem:'C',t0:Date.now()};
+  $('#q-kind').textContent=kind==='exam'?'สอบใหญ่ · เน้นการคิดขั้นสูง (HOTs)':'ทดสอบย่อย';
+  $('#q-title').textContent=kind==='exam'?('จำลองสอบใหญ่ '+items.length+' ข้อ')
+    :('บทที่ '+(MODS.map(function(m){return m.id;}).indexOf(mk)+1)+' · '+MODS.filter(function(m){return m.id===mk;})[0].name);
+  $$('[data-qel]').forEach(function(b){b.classList.toggle('on',b.dataset.qel==='C');});
+  show('s-test');renderQ();
+}
+function qAnswered(i){
+  return T.items[i].type==='mc'?T.ans[i]>=0:T.mols[i].atoms.length>1;
+}
+function renderNav(){
+  var nav=$('#q-nav');nav.innerHTML='';
+  T.items.forEach(function(q,i){
+    var b=document.createElement('button');
+    b.className='qchip'+(qAnswered(i)?' done':'')+(i===T.idx?' cur':'');
+    b.textContent=(i+1);
+    b.addEventListener('click',function(){T.idx=i;renderQ();});
+    nav.appendChild(b);
+  });
+  var done=T.items.filter(function(_,i){return qAnswered(i);}).length,sub=$('#q-submit');
+  sub.disabled=done<T.items.length;
+  sub.textContent=done<T.items.length?('ตอบแล้ว '+done+'/'+T.items.length+' ข้อ'):('ส่งคำตอบ ('+T.items.length+' ข้อ)');
+  $('#q-count').textContent=(T.idx+1)+'/'+T.items.length;
+}
+function drawQFig(q){
+  var f=$('#q-figure');f.innerHTML='';
+  if(q.mols){
+    var w=document.createElement('div');w.className='qpair';
+    ['A','B'].forEach(function(lb,i){
+      var d=document.createElement('div');d.className='qfig';
+      d.innerHTML='<svg></svg><div class="fl">'+lb+'</div>';
+      w.appendChild(d);
+      drawMol(d.querySelector('svg'),q.mols[i],{view:'skeleton',pad:22,minSize:200});
+    });
+    f.appendChild(w);
+  }else if(q.mol){
+    var d2=document.createElement('div');d2.className='qfig';d2.innerHTML='<svg></svg>';
+    f.appendChild(d2);
+    drawMol(d2.querySelector('svg'),q.mol,{view:'skeleton',pad:24,minSize:230});
+  }
+}
+function renderQ(){
+  var q=T.items[T.idx];
+  $('#q-prompt').innerHTML='<span class="qtag"></span><div class="qp"></div>';
+  $('#q-prompt .qtag').textContent=(T.kind==='exam'?'HOTs · ':'')+q.tag;
+  $('#q-prompt .qp').textContent=q.prompt;
+  drawQFig(q);
+  var opts=$('#q-options'),bld=$('#q-build');
+  if(q.type==='mc'){
+    bld.hidden=true;opts.hidden=false;
+    opts.className=q.optMols?'grid':'';
+    opts.innerHTML='';
+    var n=q.optMols?q.optMols.length:q.options.length;
+    for(var i=0;i<n;i++)(function(i){
+      var b=document.createElement('button');
+      b.className='qopt'+(T.ans[T.idx]===i?' on':'');
+      var lab='กขคง'.charAt(i)||String(i+1);
+      if(q.optMols){
+        b.innerHTML='<span class="ol">'+lab+'</span><svg></svg><span class="oc"></span>';
+        b.querySelector('.oc').textContent=q.optLabels[i]||'';
+        b.querySelector('.oc').setAttribute('style','font-size:11px;color:var(--dim);text-align:center');
+        drawMol(b.querySelector('svg'),molFromSpec(parseSpec(q.optMols[i])),{view:'skeleton',pad:20,minSize:180});
+      }else{
+        b.innerHTML='<span class="ol">'+lab+'</span><span class="ot"></span>';
+        b.querySelector('.ot').textContent=q.options[i];
+      }
+      b.addEventListener('click',function(){T.ans[T.idx]=i;renderQ();});
+      opts.appendChild(b);
+    })(i);
+  }else{
+    opts.hidden=true;opts.innerHTML='';bld.hidden=false;
+    drawQBuilder();
+  }
+  renderNav();
+  $('#q-prev').disabled=T.idx===0;
+  $('#q-next').disabled=T.idx===T.items.length-1;
+  var sc=document.querySelector('.qscroll');if(sc)sc.scrollTop=0;
+}
+function drawQBuilder(){
+  var mol=T.mols[T.idx];
+  drawMol($('#q-svg'),mol,{view:'skeleton',interactive:true,sel:T.sels[T.idx],
+    onAtom:function(id){T.sels[T.idx]=id;drawQBuilder();},
+    onBond:function(b){
+      var cur=b.order,ok=false;
+      for(var k=1;k<=3&&!ok;k++){var nx=(cur+k-1)%3+1,d=nx-cur;
+        if(freeVal(mol,b.a)>=d&&freeVal(mol,b.b)>=d){b.order=nx;ok=true;}}
+      if(!ok)toast('เวเลนซ์ไม่พอสำหรับพันธะที่สูงขึ้น');
+      else{buzz(8);if(b.order===3||cur===3)relayout(mol);}
+      drawQBuilder();renderNav();
+    },
+    onBud:function(bd){
+      var id=mol.next++;
+      mol.atoms.push({id:id,el:T.elem,x:bd.x,y:bd.y});
+      mol.bonds.push({a:T.sels[T.idx],b:id,order:1});
+      T.sels[T.idx]=id;buzz(8);drawQBuilder();renderNav();
+    },
+    onLink:function(L){
+      mol.bonds.push({a:T.sels[T.idx],b:L.id,order:1});
+      relayout(mol);buzz([10,50,10]);drawQBuilder();renderNav();
+    }});
+  $('#q-live').textContent=prettyFormula(mol);
+}
+function gradeTest(){
+  var rows=T.items.map(function(q,i){
+    return {q:q,i:i,ok:q.type==='mc'?(T.ans[i]===q.answer):sameMolecule(T.mols[i],q.target)};
+  });
+  var score=rows.filter(function(r){return r.ok;}).length,total=T.items.length;
+  /* keep the best attempt — retaking is practice, it should never cost a learner marks */
+  if(T.kind==='exam'){
+    var pe=S.exam;
+    S.exam={score:Math.max(score,pe?pe.score:0),total:total,last:score,
+            tries:(pe&&pe.tries||0)+1,at:Date.now()};
+  }else{
+    S.quiz=S.quiz||{};
+    var pq=S.quiz[T.mod];
+    S.quiz[T.mod]={score:Math.max(score,pq?pq.score:0),total:total,last:score,
+                   tries:(pq&&pq.tries||0)+1,at:Date.now()};
+  }
+  save();buzz([15,60,15]);
+  showResult(rows,score,total);
+  syncNow();
+}
+function showResult(rows,score,total){
+  var pct=Math.round(score/total*100);
+  $('#r-kind').textContent=T.kind==='exam'?'ผลสอบใหญ่':'ผลทดสอบย่อย';
+  $('#r-title').textContent=$('#q-title').textContent;
+  $('#r-score').textContent=score+' / '+total;
+  $('#r-scl').textContent='คิดเป็น '+pct+'%';
+  $('#r-bar').style.width=pct+'%';
+  $('#r-msg').textContent=pct>=80?'เยี่ยมมาก เข้าใจเนื้อหาบทนี้ได้ดี'
+    :pct>=50?'พอใช้ ลองกลับไปทบทวนข้อที่ผิดอีกครั้ง'
+    :'ยังต้องทบทวนอีกพอสมควร ลองอ่านคลังความรู้ของบทนี้แล้วทำใหม่';
+  var list=$('#r-list');list.innerHTML='';
+  rows.forEach(function(r){
+    var d=document.createElement('div');d.className='rrow '+(r.ok?'ok':'no');
+    d.innerHTML='<div class="rm">'+(r.ok?'✓':'✗')+'</div><div class="rb"><div class="rq"></div><div class="ra"></div></div>';
+    d.querySelector('.rq').textContent=(r.i+1)+'. '+r.q.prompt;
+    if(r.ok)d.querySelector('.ra').textContent='ตอบถูก';
+    else{
+      var corr=r.q.type==='mc'
+        ?(r.q.optMols?('ข้อที่ถูกคือ '+(r.q.optLabels[r.q.answer]||('ตัวเลือกที่ '+(r.q.answer+1)))):r.q.options[r.q.answer])
+        :('โครงสร้างที่ถูกคือ '+condensedStr(r.q.target)+' ('+prettyFormula(r.q.target)+')');
+      d.querySelector('.ra').innerHTML='เฉลย: <b></b>';
+      d.querySelector('.ra b').textContent=corr;
+    }
+    list.appendChild(d);
+  });
+  show('s-res');
+}
+function initTest(){
+  $('#q-prev').addEventListener('click',function(){if(T&&T.idx>0){T.idx--;renderQ();}});
+  $('#q-next').addEventListener('click',function(){if(T&&T.idx<T.items.length-1){T.idx++;renderQ();}});
+  $('#q-submit').addEventListener('click',function(){if(!$('#q-submit').disabled)gradeTest();});
+  $('#q-exit').addEventListener('click',function(){
+    var now=Date.now();
+    if(now-exitArm<3500){T=null;openHome();return;}
+    exitArm=now;toast('แตะ ✕ อีกครั้งเพื่อออก — คำตอบทั้งหมดจะหายไป');
+  });
+  $$('[data-qel]').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(!T)return;
+      T.elem=b.dataset.qel;
+      $$('[data-qel]').forEach(function(x){x.classList.toggle('on',x===b);});
+    });
+  });
+  $('#q-del').addEventListener('click',function(){
+    if(!T)return;
+    var mol=T.mols[T.idx],sel=T.sels[T.idx];
+    if(mol.atoms.length<=1){toast('เหลืออะตอมเดียวแล้ว');return;}
+    if(!canDelete(mol,sel)){toast('ลบอะตอมนี้ไม่ได้ เพราะโครงสร้างจะขาดออกเป็นสองส่วน');return;}
+    var wasRing=!!findRing(mol);
+    var bs=BO(mol,sel),parent=bs.length?oth(bs[0],sel):null;
+    mol.bonds=mol.bonds.filter(function(b){return b.a!==sel&&b.b!==sel;});
+    mol.atoms=mol.atoms.filter(function(a){return a.id!==sel;});
+    T.sels[T.idx]=parent!=null?parent:mol.atoms[0].id;
+    if(wasRing)relayout(mol);
+    drawQBuilder();renderNav();
+  });
+  $('#q-clear').addEventListener('click',function(){
+    if(!T)return;
+    T.mols[T.idx]=mkMol();T.sels[T.idx]=1;drawQBuilder();renderNav();
+  });
+  $('#r-back').addEventListener('click',function(){T=null;openHome();});
+  $('#r-done').addEventListener('click',function(){T=null;openHome();});
+}
+
+/* ================= sync ================= */
+var dbP=null,SYNC={st:'idle',at:0};
+function getDb(){
+  if(dbP)return dbP;
+  dbP=(window.claude&&window.claude.use)?window.claude.use('db').catch(function(){return null;}):Promise.resolve(null);
+  return dbP;
+}
+function hhmm(t){return new Date(t).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
+function renderSync(){
+  var txt={idle:'ยังไม่ได้ซิงก์ · เก็บไว้ในเครื่อง',saving:'กำลังซิงก์…',
+           ok:'ซิงก์แล้ว '+hhmm(SYNC.at),err:'ซิงก์ไม่สำเร็จ · เก็บไว้ในเครื่องแล้ว'}[SYNC.st];
+  $$('[data-sync]').forEach(function(e){
+    e.setAttribute('data-st',SYNC.st);
+    e.querySelector('.lbl').textContent=txt;
+  });
+}
+function setSync(st){SYNC.st=st;if(st==='ok')SYNC.at=Date.now();renderSync();}
+function payload(){
+  var all=allLevels();
+  var done=all.filter(function(L2){return S.prog[L2.id]&&!S.prog[L2.id].preview;});
+  var hints=0;done.forEach(function(L2){hints+=S.prog[L2.id].hints||0;});
+  var per={},qz={};
+  MODS.forEach(function(M,i){
+    per['บทที่'+(i+1)]=modStars(M.id)+'/'+(LEVELS[M.id].length*3);
+    var q=S.quiz&&S.quiz[M.id];
+    qz['บทที่'+(i+1)]=q?(q.score+'/'+q.total):'ยังไม่ได้ทำ';
+  });
+  return {name:S.name||'-',classCode:S.cls||'-',ts:Date.now(),playedAt:new Date().toISOString(),
+    stars:totalStars(),maxStars:maxStars(),levelsDone:done.length,levelsTotal:all.length,
+    hintsUsed:hints,modStars:per,quizScores:qz,
+    examScore:S.exam?(S.exam.score+'/'+S.exam.total):'ยังไม่ได้สอบ',
+    minutes:Math.max(1,Math.round((Date.now()-(S.started||Date.now()))/60000))};
+}
+function syncNow(){
+  setSync('saving');
+  return getDb().then(function(db){
+    if(!db){setSync('err');return;}
+    /* one document per learner, updated in place */
+    return db.collection('sessions').doc(S.sid).set(payload()).then(function(){setSync('ok');});
+  }).catch(function(){setSync('err');});
+}
+function initSum(){
+  $('#u-back').addEventListener('click',openHome);
+  $('#u-send').addEventListener('click',function(){
+    var btn=$('#u-send');btn.disabled=true;
+    syncNow().then(function(){btn.disabled=false;buzz(15);});
+  });
+}
+
+/* ================= boot ================= */
+load();
+if(!S.sid)S.sid='u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+initHome();initPlay();initSum();initTest();renderSync();
+$('#mo-back').addEventListener('click',openHome);
+$('#lv-back').addEventListener('click',openMods);
+$('#g-back').addEventListener('click',openHome);
+$('#k-back').addEventListener('click',openHome);
+$('#a-back').addEventListener('click',function(){show(artFrom);});
+openHome();
+})();
+</script>
+</body>
+</html>
