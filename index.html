@@ -1634,6 +1634,17 @@ function examPool(){
   ];
 }
 
+/* ================= ตั้งค่า Google Sheet ================= */
+/* ครูแก้เฉพาะบล็อกนี้บล็อกเดียว แล้วแจกไฟล์ให้นักเรียนได้เลย
+   ดูขั้นตอนใน "วิธีติดตั้ง Google Sheet - MoleQuest.md" */
+var CFG={
+  URL:"https://script.google.com/macros/s/AKfycbyB3RAtrT3xKP4eUFgABIcxZxP2LVpQEaMcjCU8uHEdqkfKS17UOc7LKrFzHKHyeWbJ1w/exec",                    // ← วาง Web app URL ที่ลงท้ายด้วย /exec ตรงนี้ (เว้นว่าง = ไม่ส่ง เก็บในเครื่องอย่างเดียว)
+  TOKEN:"MOLEQUEST-2569",    // ต้องตรงกับค่า TOKEN ในไฟล์ Code_MoleQuest.gs
+  RETRY_MS:20000,            // ลองส่งซ้ำทุกกี่มิลลิวินาทีเมื่อเน็ตหลุด
+  AUTO_SYNC:true,            // ส่งอัตโนมัติเมื่อทำแบบทดสอบจบ
+  VERSION:"1.0"
+};
+
 /* ================= state ================= */
 var AVATARS=['🧑‍🔬','🧪','🦉','🐙','🚀'];
 var S={name:'',cls:'',av:0,prog:{},journal:[],started:Date.now()};
@@ -2292,7 +2303,7 @@ function gradeTest(){
   }
   save();buzz([15,60,15]);
   showResult(rows,score,total);
-  syncNow();
+  syncNow(true);
 }
 function showResult(rows,score,total){
   var pct=Math.round(score/total*100);
@@ -2359,7 +2370,9 @@ function initTest(){
 }
 
 /* ================= sync ================= */
-var dbP=null,SYNC={st:'idle',at:0};
+/* เก็บเฉพาะผลลัพธ์ — หนึ่งแถวต่อผู้เรียนหนึ่งคน อัปเดตทับของเดิมทุกครั้ง
+   ไม่ส่ง log รายเหตุการณ์ คิวออฟไลน์จึงเก็บสแนปช็อตล่าสุดไว้ชุดเดียว ไม่สะสมยาวขึ้นเรื่อย ๆ */
+var dbP=null,SYNC={st:'idle',at:0},PKEY='molequest2_pending',retryT=null,sending=false;
 function getDb(){
   if(dbP)return dbP;
   dbP=(window.claude&&window.claude.use)?window.claude.use('db').catch(function(){return null;}):Promise.resolve(null);
@@ -2367,37 +2380,88 @@ function getDb(){
 }
 function hhmm(t){return new Date(t).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
 function renderSync(){
-  var txt={idle:'ยังไม่ได้ซิงก์ · เก็บไว้ในเครื่อง',saving:'กำลังซิงก์…',
-           ok:'ซิงก์แล้ว '+hhmm(SYNC.at),err:'ซิงก์ไม่สำเร็จ · เก็บไว้ในเครื่องแล้ว'}[SYNC.st];
+  var txt={idle:'ยังไม่ได้ส่ง · เก็บไว้ในเครื่อง',saving:'กำลังส่ง…',
+           ok:'ส่งแล้ว '+hhmm(SYNC.at),err:'ยังส่งไม่ได้ · เก็บไว้ในเครื่อง เดี๋ยวลองใหม่ให้เอง'}[SYNC.st];
   $$('[data-sync]').forEach(function(e){
     e.setAttribute('data-st',SYNC.st);
     e.querySelector('.lbl').textContent=txt;
   });
 }
 function setSync(st){SYNC.st=st;if(st==='ok')SYNC.at=Date.now();renderSync();}
+
+/* ---------- ผลลัพธ์ที่ส่ง : หนึ่งแถวต่อผู้เรียน ค่าทุกช่องแยกคอลัมน์พร้อมวิเคราะห์ ---------- */
 function payload(){
   var all=allLevels();
   var done=all.filter(function(L2){return S.prog[L2.id]&&!S.prog[L2.id].preview;});
-  var hints=0;done.forEach(function(L2){hints+=S.prog[L2.id].hints||0;});
-  var per={},qz={};
+  var hints=0,secs=0;
+  done.forEach(function(L2){var p=S.prog[L2.id];hints+=p.hints||0;secs+=p.sec||0;});
+  var noHint=done.filter(function(L2){return S.prog[L2.id].hints===0;}).length;
+  var o={
+    sid:S.sid,name:S.name||'-',cls:S.cls||'-',
+    ts:Date.now(),
+    stars:totalStars(),maxStars:maxStars(),
+    levelsDone:done.length,levelsTotal:all.length,
+    modsDone:MODS.filter(function(M){return modDone(M.id)>=LEVELS[M.id].length;}).length,
+    modsTotal:MODS.length,
+    noHintPct:done.length?Math.round(noHint/done.length*100):0,
+    hintsUsed:hints,solveSec:secs,
+    minutes:Math.max(1,Math.round((Date.now()-(S.started||Date.now()))/60000)),
+    version:CFG.VERSION
+  };
   MODS.forEach(function(M,i){
-    per['บทที่'+(i+1)]=modStars(M.id)+'/'+(LEVELS[M.id].length*3);
-    var q=S.quiz&&S.quiz[M.id];
-    qz['บทที่'+(i+1)]=q?(q.score+'/'+q.total):'ยังไม่ได้ทำ';
+    var n='m'+(i+1),q=S.quiz&&S.quiz[M.id];
+    o[n+'Stars']=modStars(M.id);
+    o[n+'Max']=LEVELS[M.id].length*3;
+    o[n+'Quiz']=q?q.score:'';
+    o[n+'QuizTotal']=q?q.total:'';
   });
-  return {name:S.name||'-',classCode:S.cls||'-',ts:Date.now(),playedAt:new Date().toISOString(),
-    stars:totalStars(),maxStars:maxStars(),levelsDone:done.length,levelsTotal:all.length,
-    hintsUsed:hints,modStars:per,quizScores:qz,
-    examScore:S.exam?(S.exam.score+'/'+S.exam.total):'ยังไม่ได้สอบ',
-    minutes:Math.max(1,Math.round((Date.now()-(S.started||Date.now()))/60000))};
+  o.examScore=S.exam?S.exam.score:'';
+  o.examTotal=S.exam?S.exam.total:'';
+  o.examTries=S.exam?S.exam.tries:'';
+  o.examAt=(S.exam&&S.exam.at)?new Date(S.exam.at).toISOString():'';
+  return o;
 }
-function syncNow(){
-  setSync('saving');
-  return getDb().then(function(db){
-    if(!db){setSync('err');return;}
-    /* one document per learner, updated in place */
-    return db.collection('sessions').doc(S.sid).set(payload()).then(function(){setSync('ok');});
-  }).catch(function(){setSync('err');});
+
+/* ---------- คิวออฟไลน์ : เก็บสแนปช็อตล่าสุดชุดเดียว ---------- */
+function pendingSet(row){try{localStorage.setItem(PKEY,JSON.stringify(row));}catch(e){}}
+function pendingGet(){try{var r=localStorage.getItem(PKEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+function pendingClear(){try{localStorage.removeItem(PKEY);}catch(e){}}
+
+function postSheet(row){
+  /* text/plain กัน CORS preflight ที่ Apps Script ตอบไม่ได้ */
+  return fetch(CFG.URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({token:CFG.TOKEN,rows:[row]})
+  }).then(function(r){
+    if(!r.ok)throw new Error('http '+r.status);
+    return r.text();
+  });
+}
+function scheduleRetry(){
+  if(retryT||!CFG.RETRY_MS)return;
+  retryT=setTimeout(function(){retryT=null;flushPending();},CFG.RETRY_MS);
+}
+function flushPending(){
+  var row=pendingGet();
+  if(!row||!CFG.URL||sending)return;
+  sending=true;setSync('saving');
+  postSheet(row).then(function(){pendingClear();setSync('ok');})
+    .catch(function(){setSync('err');scheduleRetry();})
+    .then(function(){sending=false;});
+}
+function syncNow(auto){
+  var row=payload();
+  pendingSet(row);
+  /* ถ้าเปิดในอาร์ติแฟกต์ก็เขียนลง db ไปด้วย ถ้าไม่ใช่ก็เงียบไป ไม่กระทบสถานะที่นักเรียนเห็น */
+  getDb().then(function(db){if(db)db.collection('sessions').doc(S.sid).set(row).catch(function(){});});
+  if(!CFG.URL){setSync('idle');return Promise.resolve();}
+  if(auto&&!CFG.AUTO_SYNC){setSync('idle');return Promise.resolve();}
+  if(sending)return Promise.resolve();
+  sending=true;setSync('saving');
+  return postSheet(row).then(function(){
+    pendingClear();setSync('ok');
+  }).catch(function(){
+    setSync('err');scheduleRetry();
+  }).then(function(){sending=false;});
 }
 function initSum(){
   $('#u-back').addEventListener('click',openHome);
@@ -2405,6 +2469,16 @@ function initSum(){
     var btn=$('#u-send');btn.disabled=true;
     syncNow().then(function(){btn.disabled=false;buzz(15);});
   });
+  window.addEventListener('online',flushPending);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)flushPending();});
+  window.addEventListener('pagehide',function(){
+    var row=pendingGet();
+    if(row&&CFG.URL&&navigator.sendBeacon){
+      try{navigator.sendBeacon(CFG.URL,new Blob([JSON.stringify({token:CFG.TOKEN,rows:[row]})],
+        {type:'text/plain;charset=utf-8'}));}catch(e){}
+    }
+  });
+  if(pendingGet())scheduleRetry();
 }
 
 /* ================= boot ================= */
